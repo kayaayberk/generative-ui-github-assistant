@@ -1,0 +1,7 @@
+{
+  "extends": "next/core-web-vitals",
+  "plugins": ["tailwindcss"],
+  "rules": {
+    "tailwindcss/enforces-shorthand": "warn"
+  }
+}

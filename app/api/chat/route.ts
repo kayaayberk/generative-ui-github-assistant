@@ -1,26 +1,38 @@
-import OpenAI from 'openai';
-import { OpenAIStream, StreamingTextResponse } from 'ai';
+import OpenAI from 'openai'
+import { OpenAIStream, StreamingTextResponse } from 'ai'
+import { NextResponse } from 'next/server'
 
-// Create an OpenAI API client (that's edge friendly!)
+// Create an Edge friendly OpenAI API client
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || '',
-});
+  apiKey: process.env.OPENAI_API_KEY,
+})
 
-// IMPORTANT! Set the runtime to edge
-export const runtime = 'edge';
+export const runtime = 'edge'
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  try {
+    if (!process.env.OPENAI_API_KEY) {
+      return new NextResponse('Missing OpenAI API key', { status: 400 })
+    }
+    const { messages } = await req.json()
 
-  // Ask OpenAI for a streaming chat completion given the prompt
-  const response = await openai.chat.completions.create({
-    model: 'gpt-3.5-turbo',
-    stream: true,
-    messages,
-  });
+    // Ask OpenAI for a streaming chat completion given the prompt
+    const response = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      stream: true,
+      messages,
+    })
 
-  // Convert the response into a friendly text-stream
-  const stream = OpenAIStream(response);
-  // Respond with the stream
-  return new StreamingTextResponse(stream);
+    // Convert the response into text-stream
+    const stream = OpenAIStream(response)
+    // Respond with the stream
+    return new StreamingTextResponse(stream)
+  } catch (error) {
+    if (error instanceof OpenAI.APIError) {
+      const { name, status, headers, message } = error
+      return NextResponse.json({ name, status, headers, message }, { status })
+    } else {
+      throw error
+    }
+  }
 }
