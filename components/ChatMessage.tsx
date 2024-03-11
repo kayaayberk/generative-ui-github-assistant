@@ -1,7 +1,8 @@
 'use client'
 
-import { Sparkle, User } from '@phosphor-icons/react'
 import { Message } from 'ai/react'
+import { Sparkle, User } from '@phosphor-icons/react'
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 
 function ChatMessage({
   m,
@@ -20,16 +21,16 @@ function ChatMessage({
       {m.role === 'user' ? (
         <div className='flex items-start'>
           <div className='flex items-start'>
-            <div className='h-full rounded-md border p-0.5'>
-              <User size={24} />
+            <div className='h-full rounded-full border p-0.5'>
+              <User size={20} />
             </div>
           </div>
         </div>
       ) : (
         <div className='flex items-start'>
           <div className='flex items-start'>
-            <div className='h-full rounded-md border p-0.5'>
-              <Sparkle size={24} />
+            <div className='h-full rounded-full border p-0.5'>
+              <Sparkle size={20} />
             </div>
           </div>
         </div>
