@@ -1,6 +1,6 @@
+import { Toaster } from '@/components/ui/toaster'
 import './globals.css'
 import { Providers } from './providers'
-import Sidebar from '@/components/Sidebar'
 
 export const viewport = {
   themeColor: [
@@ -22,10 +22,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
           defaultTheme='system'
           disableTransitionOnChange
         >
-          <main className='w-full h-screen flex-1 lg:flex'>
-            <Sidebar />
-            {children}
-          </main>
+          <main className='w-full h-screen flex-1 lg:flex'>{children}</main>
+          <Toaster />
         </Providers>
       </body>
     </html>

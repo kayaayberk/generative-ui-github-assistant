@@ -3,6 +3,7 @@
 import { Message } from 'ai/react'
 import { Sparkle, User } from '@phosphor-icons/react'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import Image from 'next/image'
 
 function ChatMessage({
   m,
@@ -13,6 +14,7 @@ function ChatMessage({
   isLoading: boolean
   error: undefined | Error
 }) {
+  const session = useKindeBrowserClient()
   return (
     <div
       key={m.id}
@@ -21,9 +23,13 @@ function ChatMessage({
       {m.role === 'user' ? (
         <div className='flex items-start'>
           <div className='flex items-start'>
-            <div className='h-full rounded-full border p-0.5'>
-              <User size={20} />
-            </div>
+            <Image
+              width={28}
+              height={28}
+              src={session.user?.picture ?? ''}
+              alt='User Image'
+              className='h-full rounded-full border'
+            ></Image>
           </div>
         </div>
       ) : (

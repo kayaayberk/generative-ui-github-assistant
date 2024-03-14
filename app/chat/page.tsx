@@ -1,14 +1,23 @@
-import ChatArea from '@/components/ChatArea'
+import { nanoid } from '@/lib/utils'
+import Chat from '@/components/Chat'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import { redirect } from 'next/navigation'
 
-export default async function Chat() {
+export default async function IndexPage() {
+  const id = nanoid()
   const { isAuthenticated } = getKindeServerSession()
-  console.log(await isAuthenticated())
-  return (await isAuthenticated()) ? (
-    <div className='flex flex-col size-full pt-16 px-0 mx-auto stretch'>
-      <ChatArea />
-    </div>
-  ) : (
-    <p>This page is protected</p>
+  const session = await isAuthenticated()
+
+  if (!session) {
+    redirect('/api/auth/login')
+  }
+
+  return (
+    <>
+      <p>hi</p>
+      <Chat
+      // id={id}
+      />
+    </>
   )
 }
