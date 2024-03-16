@@ -6,11 +6,31 @@ import {
   getKindeServerSession,
 } from '@kinde-oss/kinde-auth-nextjs/server'
 import { SignOut } from '@phosphor-icons/react/dist/ssr'
+import { db } from '@/db'
+import { user, InsertUser } from '@/db/schema'
+import { eq } from 'drizzle-orm'
 
 async function Sidebar() {
   const { isAuthenticated, getUser } = getKindeServerSession()
-  const user = await getUser()
-  console.log(await getUser())
+  const loggedInUser = await getUser()
+
+  if (loggedInUser) {
+    const existingUser = await db
+      .select({ id: user.id })
+      .from(user)
+      .where(eq(user.id, loggedInUser.id))
+
+    if (!existingUser.length) {
+      const newUser: InsertUser = {
+        id: loggedInUser.id,
+        email: loggedInUser.email ?? '',
+        name: loggedInUser.given_name ?? '',
+        surname: loggedInUser.family_name ?? '',
+        createdAt: new Date(),
+      }
+      await db.insert(user).values(newUser)
+    }
+  }
   return (
     <div className='sticky left-0 hidden p-2 overflow-scroll border-r lg:flex lg:w-[270px] lg:flex-col xl:w-72 justify-between'>
       <div>Chat list</div>
