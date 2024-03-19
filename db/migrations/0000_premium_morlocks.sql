@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS "chat" (
 	"author" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"path" text NOT NULL,
-	"messages" json
+	"messages" json NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "user" (

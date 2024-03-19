@@ -1,5 +1,7 @@
-import { json, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core'
+import { json, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 import { type InferSelectModel, type InferInsertModel } from 'drizzle-orm'
+import { Message } from 'ai'
+import { Chat } from '@/lib/types'
 
 export const user = pgTable('user', {
   id: text('id').notNull().primaryKey(),
@@ -17,7 +19,7 @@ export const chat = pgTable('chat', {
     .references(() => user.id),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   path: text('path').notNull(),
-  messages: json('messages').$type<string[]>(),
+  messages: json('messages').$type<Message[]>().notNull(),
 })
 
 export type SelectUser = InferSelectModel<typeof user>

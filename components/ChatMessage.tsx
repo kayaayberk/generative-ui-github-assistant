@@ -1,54 +1,35 @@
 'use client'
 
+import Image from 'next/image'
 import { Message } from 'ai/react'
 import { Sparkle, User } from '@phosphor-icons/react'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
-import Image from 'next/image'
+import { useAIState, useUIState } from 'ai/rsc'
+import { BotMessage, UserMessage } from './assistant/Message'
+import { UIState } from '@/lib/chat/actions'
+import { Separator } from './ui/seperator'
 
-function ChatMessage({
-  m,
-  error,
-  isLoading,
-}: {
-  m: Message
-  isLoading: boolean
-  error: undefined | Error
-}) {
+export interface ChatList {
+  messages: UIState
+  // isShared: boolean
+}
+
+export function ChatMessage({ messages }: ChatList) {
   const session = useKindeBrowserClient()
+
+  if (!messages.length) {
+    return null
+  }
+
   return (
-    <div
-      key={m.id}
-      className='whitespace-pre-wrap flex items-start gap-2 mb-10'
-    >
-      {m.role === 'user' ? (
-        <div className='flex items-start'>
-          <div className='flex items-start'>
-            <Image
-              width={28}
-              height={28}
-              src={session.user?.picture ?? ''}
-              alt='User Image'
-              className='h-full rounded-full border'
-            ></Image>
+    <div className='whitespace-pre-wrap flex flex-col items-start size-full gap-2 mb-10'>
+      {messages &&
+        messages.map((message, index) => (
+          <div key={message.id} className='w-full'>
+            {message.display}
+            {index < messages.length - 1 && <Separator className='my-4' />}
           </div>
-        </div>
-      ) : (
-        <div className='flex items-start'>
-          <div className='flex items-start'>
-            <div className='h-full rounded-full border p-0.5'>
-              <Sparkle size={20} />
-            </div>
-          </div>
-        </div>
-      )}
-      <div>
-        <div className='font-semibold'>
-          {m.role === 'user' ? 'You' : 'GitHub Assistant'}
-        </div>
-        <div className='font-light'>{error ? error.message : m.content}</div>
-      </div>
+        ))}
     </div>
   )
 }
-
-export default ChatMessage

@@ -28,9 +28,14 @@ function UserBadge() {
             )}
           </div>
           <div className='flex flex-col'>
-            <span className='text-sm font-semibold whitespace-nowrap'>
-              {user?.given_name + ' ' + user?.family_name}
-            </span>
+            <div className='flex items-center gap-1'>
+              <span className='text-sm font-semibold whitespace-nowrap'>
+                {user?.given_name}
+              </span>
+              <span className='text-sm font-semibold whitespace-nowrap'>
+                {user?.family_name ? user?.family_name : ''}
+              </span>
+            </div>
             <span className='text-xs font-light whitespace-nowrap'>
               {user?.email}
             </span>

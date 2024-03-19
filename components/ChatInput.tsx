@@ -1,41 +1,24 @@
-'use client'
-
+import * as React from 'react'
 import { Input } from './ui/input'
 import { Button } from './ui/button'
-import { type UseChatHelpers } from 'ai/react'
+import { AI } from '@/lib/chat/actions'
 import { ArrowUp, StopCircle } from '@phosphor-icons/react'
+import { useAIState, useActions, useUIState } from 'ai/rsc'
+import { PromptForm } from './PromptForm'
 
-type ChatInputProps = Pick<
-  UseChatHelpers,
-  'input' | 'handleInputChange' | 'isLoading' | 'handleSubmit'
->
+export interface ChatPanelProps {
+  id?: string
+  title?: string
+  input: string
+  setInput: (value: string) => void
+}
+function ChatInput({ id, title, input, setInput }: ChatPanelProps) {
+  const [aiState] = useAIState()
+  const [messages, setMessages] = useUIState<typeof AI>()
+  const { submitUserMessage } = useActions()
+  const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
 
-function ChatInput({
-  input,
-  handleInputChange,
-  handleSubmit,
-  isLoading,
-}: ChatInputProps) {
-  return (
-    <form onSubmit={handleSubmit} className='absolute w-full bottom-0'>
-      <div className='relative bottom-0 border w-full p-1 mb-8 rounded-md shadow-xl max-w-2xl mx-auto'>
-        <Input
-          className='bottom-0 w-full border-none focus-visible:ring-0'
-          value={input}
-          placeholder='Say something...'
-          onChange={handleInputChange}
-        />
-        <Button
-          className='absolute bottom-1 right-1'
-          type='submit'
-          size='icon'
-          disabled={isLoading}
-        >
-          {isLoading ? <StopCircle size={18} /> : <ArrowUp size={18} />}
-        </Button>
-      </div>
-    </form>
-  )
+  return <PromptForm input={input} setInput={setInput} />
 }
 
 export default ChatInput
