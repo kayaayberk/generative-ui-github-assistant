@@ -26,7 +26,7 @@ function SidebarItems({ chats }: SidebarItemsProps) {
               </SidebarItem>
             </div>
           ),
-      )}
+      ).reverse()}
     </div>
   )
 }

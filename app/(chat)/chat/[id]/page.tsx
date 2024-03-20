@@ -1,16 +1,18 @@
 import Chat from '@/components/Chat'
-import { getChat, getMissingKeys } from '@/app/actions'
-import { notFound, redirect } from 'next/navigation'
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { AI } from '@/lib/chat/actions'
+import { notFound, redirect } from 'next/navigation'
+import { getChat, getMissingKeys } from '@/app/actions'
+import { getGithubProfile, listUsers } from '@/lib/chat/github/github'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 
 export interface ChatPageProps {
   params: {
     id: string
   }
 }
+
 export default async function ChatPage({ params }: ChatPageProps) {
-  const { isAuthenticated, getUser } = getKindeServerSession()
+  const { getUser } = getKindeServerSession()
   const user = await getUser()
   const missingKeys = await getMissingKeys()
 

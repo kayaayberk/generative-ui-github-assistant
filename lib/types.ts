@@ -1,4 +1,3 @@
-import { KindeUser } from '@kinde-oss/kinde-auth-nextjs/dist/types'
 import { type Message } from 'ai'
 
 export interface Chat extends Record<string, any> {
@@ -24,4 +23,27 @@ export interface Session {
   family_name: string
   given_name: string
   createdAt: Date
+}
+
+export interface GithubUser {
+  name?: string
+  avatar_url: string
+  login: string
+  html_url: string
+  company?: string
+  blog?: string
+  location?: string
+  email?: string
+  bio?: string
+  twitter_username?: string
+  followers: number
+  following: number
+  created_at: Date
+  public_repos: number
+}
+
+export interface ListOfUsers {
+  incomplete_results: boolean
+  items: GithubUser[]
+  total_count: number
 }

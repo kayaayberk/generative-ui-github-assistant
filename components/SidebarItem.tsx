@@ -23,15 +23,18 @@ function SidebarItem({ index, chat, children }: SidebarItemProps) {
     <div className='size-full'>
       <Link
         href={chat.path}
+        title={chat.title}
         className={`${
           isActive
             ? 'bg-gray-400/40 dark:bg-white/20 font-medium'
             : 'hover:bg-gray-200 dark:text-white/80 dark:hover:bg-gray-500/20'
-        } py-1 rounded-md px-2 font-light text-sm tracking-wide flex items-center gap-2 w-full`}
+        } py-1 rounded-md overflow-hidden whitespace-nowrap px-2 font-light text-sm tracking-wide flex items-center gap-2 w-full`}
         prefetch={true}
       >
-        <ChatIcon />
-        {chat.title}
+        <div>
+          <ChatIcon size={16} />
+        </div>
+        <span className='truncate ...'>{chat.title}</span>
       </Link>
       {/* {isActive && <div className='absolute right-2 top-1'>{children}</div>} */}
     </div>

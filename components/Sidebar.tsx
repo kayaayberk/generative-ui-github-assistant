@@ -5,11 +5,12 @@ import {
   LogoutLink,
   getKindeServerSession,
 } from '@kinde-oss/kinde-auth-nextjs/server'
-import { SignOut } from '@phosphor-icons/react/dist/ssr'
+import { Plus, SignOut } from '@phosphor-icons/react/dist/ssr'
 import { db } from '@/db'
 import { user, InsertUser } from '@/db/schema'
 import { eq, sql } from 'drizzle-orm'
 import { ChatHistory } from './ChatHistory'
+import Link from 'next/link'
 
 async function Sidebar() {
   const { isAuthenticated, getUser } = getKindeServerSession()
@@ -55,6 +56,13 @@ async function Sidebar() {
   return (
     <div className='sticky left-0 gap-4 hidden p-3 overflow-scroll border-r lg:flex lg:w-[270px] lg:flex-col xl:w-72 justify-between'>
       <div className='px-2 font-light text-sm tracking-wide'>Chat History</div>
+      <Link
+        href='/'
+        prefetch={true}
+        className='flex items-center gap-2 py-1 px-2 border rounded-md hover:bg-gray-200 dark:text-white/80 dark:hover:bg-gray-500/20'
+      >
+        <Plus /> <span>New Chat</span>
+      </Link>
       <ChatHistory userId={loggedInUser?.id} />
       <div className='flex flex-col gap-1'>
         <ThemeToggle />
