@@ -7,7 +7,6 @@ import {
   getMutableAIState,
   createStreamableValue,
 } from 'ai/rsc'
-import OpenAI from 'openai'
 
 import {
   BotCard,
@@ -16,17 +15,21 @@ import {
   UserMessage,
 } from '@/components/assistant/Message'
 import { z } from 'zod'
+import OpenAI from 'openai'
 import { Chat } from '../types'
 import { nanoid } from '../utils'
 import { saveChat } from '@/app/actions'
 import { currentUser } from '@clerk/nextjs'
-import { convertUserType, getGithubProfile } from './github/github'
+import { systemPrompt } from './system-prompt'
 import { Profile } from '@/components/assistant/Profile'
 import { ProfileList } from '@/components/assistant/ProfileList'
+import {
+  convertUserType,
+  getGithubProfile,
+  searchRespositories,
+} from './github/github'
 import { ProfileSkeleton } from '@/components/assistant/ProfileSkeleton'
-import { useProfileConverter } from '../hooks/use-profile-converter'
-import { useId } from 'react'
-import { systemPrompt } from './system-prompt'
+import Repositories from '@/components/assistant/Repositories'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || '',
@@ -188,6 +191,54 @@ async function submitUserMessage(content: string, attribute: string) {
           )
         },
       },
+      show_repository_ui: {
+        description: 'Show the found repositories UI',
+        parameters: z.object({
+          query: z.string().describe('The query to search for users'),
+        }),
+        render: async function* ({ query }) {
+          yield (
+            <BotCard>
+              <ProfileSkeleton />
+            </BotCard>
+          )
+
+          const repositories = await (
+            await searchRespositories(query)
+          ).map((r) => {
+            return r
+          })
+          console.log(repositories)
+          aiState.done({
+            ...aiState.get(),
+            messages: [
+              ...aiState.get().messages,
+              {
+                id: nanoid(),
+                role: 'function',
+                name: 'show_repository_ui',
+                content: JSON.stringify(repositories),
+              },
+            ],
+          })
+          aiState.update({
+            ...aiState.get(),
+            messages: [
+              ...aiState.get().messages,
+              {
+                id: nanoid(),
+                role: 'system' as const,
+                content: `[Found ${repositories} repositories]`,
+              },
+            ],
+          })
+          return (
+            <BotCard>
+              <Repositories props={repositories} />
+            </BotCard>
+          )
+        },
+      },
     },
   })
 
@@ -290,6 +341,10 @@ export const getUIStateFromAIState = (aiState: Chat) => {
           ) : m.name === 'show_user_list_ui' ? (
             <BotCard>
               <ProfileList props={JSON.parse(m.content)} />
+            </BotCard>
+          ) : m.name === 'show_repository_ui' ? (
+            <BotCard>
+              <Repositories props={JSON.parse(m.content)} />
             </BotCard>
           ) : null
         ) : m.role === 'user' ? (
