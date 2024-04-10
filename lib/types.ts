@@ -47,3 +47,41 @@ export interface ListOfUsers {
   items: GithubUser[]
   total_count: number
 }
+
+export interface AttributeTypes {
+  name: string
+  value: string
+  role: string
+  icon?: React.ReactNode
+}
+
+export interface RepoFetchProps {
+  total_count: number
+  incomplete_results: boolean
+  items: RepoProps[]
+}
+
+export interface RepoProps {
+  id: number
+  name: string
+  full_name: string
+  homepage: string
+  owner: {
+    login: string
+    avatar_url: string
+    url: string
+  }
+  html_url: string
+  description: string
+  language: string
+  stargazers_count: number
+  open_issues: number
+  license: {
+    spdx_id: string
+  }
+  issues_url: string
+  tags_url: string
+  languages_url: string
+  updated_at: string
+  topics: string[]
+}
