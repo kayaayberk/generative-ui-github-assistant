@@ -104,6 +104,7 @@ export async function submitUserMessage(content: string, attribute: string) {
             </BotCard>
           )
           const profile = await getGithubProfile(username)
+          console.log('profile', profile)
 
           aiState.done({
             ...aiState.get(),

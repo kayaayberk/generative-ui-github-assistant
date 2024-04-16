@@ -3,11 +3,12 @@ import { AI } from './actions'
 import { nanoid } from 'nanoid'
 import { runAsyncFnWithoutBlocking } from '../utils'
 import { getReadme, searchRespositories } from './github/github'
-import { BotCard, BotMessage } from '@/components/assistant/Message'
+import { BotCard } from '@/components/assistant/Message'
 import Repositories from '@/components/assistant/Repositories'
 import { createStreamableUI, getMutableAIState } from 'ai/rsc'
 import { ProfileSkeleton } from '@/components/assistant/ProfileSkeleton'
 import { Spinner } from '@/components/assistant/Spinner'
+import { Readme } from '@/components/assistant/Readme'
 
 export async function submitUserAction(
   actionType: string,
@@ -77,7 +78,7 @@ export async function submitUserAction(
     }
   }
 
-  console.log(`Repo: ${repo}, Owner: ${owner}`);
+  console.log(`Repo: ${repo}, Owner: ${owner}`)
   if (
     actionType === 'getReadmeUI' &&
     repo !== undefined &&
@@ -96,7 +97,7 @@ export async function submitUserAction(
 
       systemMessage.done(
         <BotCard>
-          <BotMessage content={readme} />
+          <Readme content={readme} />
         </BotCard>,
       )
 
