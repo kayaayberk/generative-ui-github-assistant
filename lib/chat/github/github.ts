@@ -1,6 +1,13 @@
 import { auth } from '@clerk/nextjs'
 import { getGithubAccessToken } from '@/app/actions'
-import { GithubUser, ListOfUsers, RepoFetchProps, RepoProps } from '@/lib/types'
+import {
+  Directory,
+  GithubUser,
+  ListOfUsers,
+  Readme,
+  RepoFetchProps,
+  RepoProps,
+} from '@/lib/types'
 
 /**
  * This TypeScript function fetches and returns a GitHub user's profile data using the GitHub API.
@@ -118,3 +125,60 @@ export const searchRespositories = async (query: string) => {
 
   return items as RepoProps[]
 }
+
+export const getReadme = async (
+  repo: string,
+  owner: string,
+): Promise<Readme> => {
+  const { userId } = auth()
+  if (!userId) {
+    throw new Error('userId not found')
+  }
+  const accessToken = await getGithubAccessToken(userId)
+  const res = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/contents/README.md`,
+    {
+      method: 'GET',
+      headers: {
+        Accept: 'application/vnd.github.json',
+        Authorization: `Bearer ${accessToken}`,
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    },
+  )
+  const readme: Readme = await res.json()
+
+  // Decode the content from base64
+  readme.content = Buffer.from(readme.content, 'base64').toString('utf8')
+  return readme
+}
+
+export const getDir = async ({
+  repo,
+  owner,
+}: {
+  repo: string
+  owner: string
+}): Promise<Directory[]> => {
+  const { userId } = auth()
+  if (!userId) {
+    throw new Error('userId not found')
+  }
+  const accessToken = await getGithubAccessToken(userId)
+
+  const res = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/contents/`,
+    {
+      method: 'GET',
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: `Bearer ${accessToken}`,
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    },
+  )
+  const dir = await res.json()
+  // console.log('dir:', dir) // Debugging line
+  return dir
+}
+// getDir({user: 'kayaayberk', repo: 'generative-ui-github-assistant'})

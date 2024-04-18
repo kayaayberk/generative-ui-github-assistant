@@ -2,7 +2,9 @@ import 'server-only'
 
 import {
   convertUserType,
+  getDir,
   getGithubProfile,
+  getReadme,
   searchRespositories,
 } from './github/github'
 import {
@@ -20,6 +22,8 @@ import Repositories from '@/components/assistant/Repositories'
 import { ProfileList } from '@/components/assistant/ProfileList'
 import { ProfileSkeleton } from '@/components/assistant/ProfileSkeleton'
 import { createStreamableValue, getMutableAIState, render } from 'ai/rsc'
+import Directory from '@/components/assistant/Directory'
+import { Readme } from '@/components/assistant/Readme'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || '',
@@ -104,7 +108,7 @@ export async function submitUserMessage(content: string, attribute: string) {
             </BotCard>
           )
           const profile = await getGithubProfile(username)
-          console.log('profile', profile)
+          // console.log('profile', profile)
 
           aiState.done({
             ...aiState.get(),
@@ -208,20 +212,81 @@ export async function submitUserMessage(content: string, attribute: string) {
               },
             ],
           })
-          // aiState.update({
-          //   ...aiState.get(),
-          //   messages: [
-          //     ...aiState.get().messages,
-          //     {
-          //       id: nanoid(),
-          //       role: 'system' as const,
-          //       content: `[Found ${repositories} repositories]`,
-          //     },
-          //   ],
-          // })
+
           return (
             <BotCard>
               <Repositories props={repositories} />
+            </BotCard>
+          )
+        },
+      },
+      show_readme_ui: {
+        description: 'Show the found Readme.md UI',
+        parameters: z.object({
+          repo: z.string().describe('The repo to search for'),
+          owner: z.string().describe('The owner of the repo'),
+        }),
+        render: async function* ({ repo, owner }) {
+          yield (
+            <BotCard>
+              <ProfileSkeleton />
+            </BotCard>
+          )
+
+          const response = await getReadme(repo, owner)
+          // console.log(response, 'from readme')
+
+          aiState.done({
+            ...aiState.get(),
+            messages: [
+              ...aiState.get().messages,
+              {
+                id: nanoid(),
+                role: 'function',
+                name: 'show_readme_ui',
+                content: JSON.stringify(response.content),
+              },
+            ],
+          })
+
+          return (
+            <BotCard>
+              <Readme props={response.content} />
+            </BotCard>
+          )
+        },
+      },
+      show_directory_ui: {
+        description: 'Show the repository directory UI',
+        parameters: z.object({
+          repo: z.string().describe('The repo to search for'),
+          owner: z.string().describe('The owner of the repo'),
+        }),
+        render: async function* ({ repo, owner }) {
+          yield (
+            <BotCard>
+              <ProfileSkeleton />
+            </BotCard>
+          )
+
+          const response = await getDir({ repo, owner })
+
+          aiState.done({
+            ...aiState.get(),
+            messages: [
+              ...aiState.get().messages,
+              {
+                id: nanoid(),
+                role: 'function',
+                name: 'show_directory_ui',
+                content: JSON.stringify(response),
+              },
+            ],
+          })
+
+          return (
+            <BotCard>
+              <Directory props={response} />
             </BotCard>
           )
         },

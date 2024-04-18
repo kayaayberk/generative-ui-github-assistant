@@ -4,7 +4,9 @@ import { db } from '@/db'
 import { eq } from 'drizzle-orm'
 import { type Chat } from '@/lib/types'
 import { InsertChat, SelectChat, chat } from '@/db/schema'
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import { revalidatePath } from 'next/cache'
+import { QueryCache } from '@tanstack/react-query'
+import { clerkClient, currentUser } from '@clerk/nextjs'
 
 type GetChatResult = SelectChat[] | null
 type SetChetResults = InsertChat[]
@@ -74,11 +76,9 @@ export async function getChats(userId?: string | null) {
  * data to be saved in the database.
  */
 export async function saveChat(savedChat: Chat) {
-  const { isAuthenticated, getUser } = getKindeServerSession()
-  const session = await isAuthenticated()
-  const user = await getUser()
+  const user = await currentUser()
 
-  if (session && user) {
+  if (user) {
     await db
       .insert(chat)
       .values(savedChat)
@@ -103,3 +103,59 @@ export async function getMissingKeys() {
     .map((key) => (process.env[key] ? '' : key))
     .filter((key) => key !== '')
 }
+
+export async function removeChat({ id, path }: { id: string; path: string }) {
+  const user = await currentUser()
+
+  if (!user) {
+    return {
+      error: 'Unauthorized',
+    }
+  }
+
+  if (user) {
+    const uid = String(
+      await db
+        .select({ author: chat.author })
+        .from(chat)
+        .where(eq(chat.author, user.id)),
+    )
+  }
+
+  await db.delete(chat).where(eq(chat.id, id))
+  await db.delete(chat).where(eq(chat.path, path))
+  const queryCache = new QueryCache({
+    onError: (error) => {
+      console.log(error)
+    },
+    onSuccess: (data) => {
+      console.log(data)
+    },
+    onSettled: (data, error) => {
+      console.log(data, error)
+    },
+  })
+  const query = queryCache.find({ queryKey: ['profiles'] })
+
+  revalidatePath('/')
+  return revalidatePath(path)
+}
+
+export const getGithubAccessToken = async (userId: string) => {
+  if (!userId) {
+    throw new Error('userId not found')
+  }
+  const provider = 'oauth_github'
+
+  const clerkResponse = await clerkClient.users.getUserOauthAccessToken(
+    userId,
+    provider,
+  )
+
+  const accessToken = clerkResponse[0].token
+  return accessToken as string
+}
+
+// export const getAttributes = async ()=> {
+
+// }

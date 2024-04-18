@@ -9,12 +9,14 @@ import { Chat } from '../types'
 import { saveChat } from '@/app/actions'
 import { currentUser } from '@clerk/nextjs'
 import { createAI, getAIState } from 'ai/rsc'
-import { submitUserAction } from './submit-user-action'
+import { dirAction, readmeAction, repoAction } from './submit-user-action'
 import { Profile } from '@/components/assistant/Profile'
 import { submitUserMessage } from './submit-user-message'
 import { nanoid, runAsyncFnWithoutBlocking } from '../utils'
 import Repositories from '@/components/assistant/Repositories'
 import { ProfileList } from '@/components/assistant/ProfileList'
+import Directory from '@/components/assistant/Directory'
+import { Readme } from '@/components/assistant/Readme'
 
 export interface Message {
   role?: 'user' | 'assistant' | 'system' | 'function' | 'data' | 'tool'
@@ -39,7 +41,7 @@ export type UIState = {
 }[]
 
 export const AI = createAI<AIState, UIState>({
-  actions: { submitUserMessage, submitUserAction },
+  actions: { submitUserMessage, repoAction, readmeAction, dirAction },
   initialAIState: {
     chatId: nanoid(),
     messages: [],
@@ -113,6 +115,14 @@ export const getUIStateFromAIState = (aiState: Chat) => {
           ) : m.name === 'show_repository_ui' ? (
             <BotCard>
               <Repositories props={JSON.parse(m.content)} />
+            </BotCard>
+          ) : m.name === 'show_readme_ui' ? (
+            <BotCard>
+              <Readme props={JSON.parse(m.content)} />
+            </BotCard>
+          ) : m.name === 'show_directory_ui' ? (
+            <BotCard>
+              <Directory props={JSON.parse(m.content)} />
             </BotCard>
           ) : null
         ) : m.role === 'user' ? (

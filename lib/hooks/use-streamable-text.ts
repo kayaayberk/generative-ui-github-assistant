@@ -20,6 +20,8 @@ export const useStreamableText = (
     typeof content === 'string' ? content : '',
   )
 
+  const [isLoading, setIsLoading] = useState(typeof content === 'object')
+
   useEffect(() => {
     ;(async () => {
       if (typeof content === 'object') {
@@ -29,8 +31,9 @@ export const useStreamableText = (
             setRawContent((value = value + delta))
           }
         }
+        setIsLoading(false)
       }
     })()
   }, [content])
-  return rawContent
+  return { rawContent, isLoading }
 }
