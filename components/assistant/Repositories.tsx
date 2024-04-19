@@ -25,7 +25,7 @@ function Repositories({ props: repos }: { props: RepoProps[] }) {
   const { readmeAction, dirAction } = useActions()
   const [action, setAction] = React.useState('')
   const [messages, setMessages] = useUIState<typeof AI>()
-  const [selectedValue, setSelectedValue] = React.useState<string | null>(null)
+  // console.log(repos)
 
   function findColour(language: string): string {
     const entry = Object.entries(COLOURS).find(([key]) => key === language)
@@ -53,8 +53,8 @@ function Repositories({ props: repos }: { props: RepoProps[] }) {
     {
       name: 'Show Directory',
       value: 'show-directory',
-      function: async (repo: string, owner: string) => {
-        const response = await dirAction(repo, owner)
+      function: async (repo: string, owner: string, commits: string) => {
+        const response = await dirAction(repo, owner, commits)
         setMessages((currentMessages) => [
           ...currentMessages,
           response.newMessage,
@@ -172,12 +172,11 @@ function Repositories({ props: repos }: { props: RepoProps[] }) {
                             className='p-2 cursor-pointer'
                             onSelect={async () =>
                               action.value === 'show-readme'
-                                ? await action.function(r.name, r.owner.login)
+                                ? await action.function(r.name, r.owner.login, '')
                                 : action.value === 'show-directory'
-                                  ? await action.function(r.name, r.owner.login)
+                                  ? await action.function(r.name, r.owner.login, r.commits_url)
                                   : null
                             }
-                            // onClick={}
                           >
                             {action.name}
                           </DropdownMenuRadioItem>

@@ -6,13 +6,17 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from '@/components/ui/accordion'
+import { Button } from '../ui/button'
 import { Directory as Dir } from '@/lib/types'
 import React, { useEffect, useState } from 'react'
-import { File, FolderSimple } from '@phosphor-icons/react'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { useCopyToClipboard } from '@/lib/hooks/use-copy-to-clipboard'
+import { Check, Copy, File, FolderSimple } from '@phosphor-icons/react'
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 
 export default function Directory({ props }: { props: Dir[] }) {
   return (
-    <Accordion type='single' collapsible className='w-full'>
+    <Accordion type='single' collapsible className='max-w-2xl'>
       <div className='border rounded-md p-2'>
         {Array.isArray(props) &&
           props
@@ -29,24 +33,28 @@ export default function Directory({ props }: { props: Dir[] }) {
               return dir.type === 'file' ? (
                 <AccordionItem
                   value={`item-${index}`}
-                  className='flex items-center gap-1 w-full p-2 text-sm font-semibold last:border-none'
+                  className=' gap-1 w-full text-sm font-semibold last:border-none'
                   key={index}
                 >
-                  <span className='flex ml-6 items-center gap-1'>
-                    <File size={18} color='gray' weight='fill' />
-                    <span>{dir.name}</span>
-                  </span>
+                  <AccordionTrigger className='p-2 justify-start gap-2 text-sm font-semibold'>
+                    <span className='flex items-center gap-1'>
+                      <File size={18} color='#c2c2c2' weight='fill' />
+                      <span>{dir.name}</span>
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <DropdownFileContent url={dir.url} />
+                  </AccordionContent>
                 </AccordionItem>
               ) : (
                 <AccordionItem
                   value={`item-${index}`}
-                  className='text-sm font-semibold'
+                  className='gap-1 w-full text-sm font-semibold last:border-none'
                   key={index}
                 >
                   <AccordionTrigger className='p-2 justify-start gap-2 text-sm font-semibold'>
-                    {' '}
                     <span className='flex items-center gap-1'>
-                      <FolderSimple size={18} color='gray' weight='fill' />
+                      <FolderSimple size={18} color='#c2c2c2' weight='fill' />
                       <span>{dir.name}</span>
                     </span>
                   </AccordionTrigger>
@@ -68,6 +76,7 @@ function DropdownContent({ url }: { url: string }) {
     fetch(url)
       .then((response) => response.json())
       .then((data) => setFetchedData(data))
+    console.log(fetchedData)
   }, [url])
 
   return (
@@ -86,24 +95,28 @@ function DropdownContent({ url }: { url: string }) {
           return item.type === 'file' ? (
             <AccordionItem
               value={`item-${index}`}
-              className='flex items-center gap-1 w-full p-2 text-sm font-semibold last:border-none last:pb-0'
+              className='gap-1 w-full p-2 text-sm font-semibold '
               key={index}
             >
-              <span className='flex items-center gap-1 ml-6'>
-                <File size={18} color='gray' weight='fill' />
-                <span>{item.name}</span>
-              </span>
+              <AccordionTrigger
+                value={`item-${index}`}
+                key={index}
+                className=' p-0 ml-1.5 flex justify-start'
+              >
+                <span className='flex items-center gap-1 ml-2'>
+                  <File size={18} color='#c2c2c2' weight='fill' />
+                  <span>{item.name}</span>
+                </span>
+              </AccordionTrigger>
+              <AccordionContent>
+                <DropdownFileContent url={item.url} />
+              </AccordionContent>
             </AccordionItem>
           ) : (
-            <AccordionItem
-              value={`item-${index}`}
-              key={index}
-              className='last:border-none'
-            >
-              <AccordionTrigger className='p-2 justify-start gap-2 text-sm font-semibold'>
-                {' '}
+            <AccordionItem value={`item-${index}`} key={index} className=''>
+              <AccordionTrigger className='p-2 justify-start gap-2 text-sm font-semibold ml-1.5'>
                 <span className='flex items-center gap-1'>
-                  <FolderSimple size={18} color='gray' weight='fill' />
+                  <FolderSimple size={18} color='#c2c2c2' weight='fill' />
                   <span>{item.name}</span>
                 </span>
               </AccordionTrigger>
@@ -114,5 +127,78 @@ function DropdownContent({ url }: { url: string }) {
           )
         })}
     </Accordion>
+  )
+}
+
+function DropdownFileContent({
+  url,
+  className,
+}: {
+  url: string
+  className?: string
+}) {
+  const [fetchedData, setFetchedData] = useState<string>('')
+  const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 })
+
+  useEffect(() => {
+    fetch(url)
+      .then((response) => response.json())
+      .then(
+        (data) =>
+          (data.content = Buffer.from(data.content, 'base64').toString('utf8')),
+      )
+      .then((decodedData) => setFetchedData(decodedData))
+  }, [url])
+
+  
+  const match = /language-(\w+)/.exec(className || '')
+
+  const onCopy = () => {
+    if (isCopied) return
+    copyToClipboard(fetchedData)
+  }
+
+  return (
+    <div className='relative max-w-max mt-4 font-sans codeblock bg-zinc-950 rounded-md border'>
+      <div className='flex items-center justify-between w-full px-6 py-1 pr-2 rounded-t-md bg-zinc-800 text-zinc-100'>
+        <span className='text-xs lowercase'>{(match && match[1]) || ''}</span>
+        <div className='flex items-center space-x-1'>
+          <Button
+            variant='ghost'
+            size='icon'
+            className='focus-visible:ring-1 focus-visible:ring-slate-700 hover:bg-gray-200 dark:hover:bg-gray-500/20 focus-visible:ring-offset-0'
+            onClick={onCopy}
+          >
+            {isCopied ? <Check size={16} /> : <Copy size={16} />}
+          </Button>
+        </div>
+      </div>
+      <SyntaxHighlighter
+        language={(match && match[1]) || ''}
+        style={vscDarkPlus}
+        PreTag='div'
+        showLineNumbers
+        customStyle={{
+          margin: 0,
+          width: '100%',
+          height: '300px',
+          background: 'transparent',
+          padding: '1.5rem 1rem',
+          overflowX: 'scroll',
+          overflowY: 'scroll',
+        }}
+        lineNumberStyle={{
+          userSelect: 'none',
+        }}
+        codeTagProps={{
+          style: {
+            fontSize: '0.8rem',
+            fontFamily: 'var(--font-mono)',
+          },
+        }}
+      >
+        {fetchedData}
+      </SyntaxHighlighter>
+    </div>
   )
 }
