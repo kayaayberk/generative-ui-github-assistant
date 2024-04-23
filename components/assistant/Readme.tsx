@@ -11,11 +11,8 @@ import Image from 'next/image'
 
 export function Readme({ props: readme }: { props: string }) {
   return (
-    <div className={cn('group relative flex items-start md:-ml-12 max-w-2xl')}>
-      <div className='flex size-[25px] shrink-0 select-none items-center justify-center rounded-md bg-primary text-primary-foreground shadow-sm'>
-        <Sparkle />
-      </div>
-      <div className='ml-4 flex-1 space-y-2 overflow-hidden px-1'>
+    <div className={cn('group flex items-start w-[330px] sm:w-full')}>
+      <div className='flex-1 space-y-2 overflow-hidden px-1 w-full'>
         <span className='font-semibold'>GitHub Assistant</span>
         <MemoizedReactMarkdown
           className='prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 border rounded-md p-4 text-sm'

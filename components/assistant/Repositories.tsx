@@ -18,14 +18,13 @@ import License from '../icons/License'
 import { AI } from '@/lib/chat/actions'
 import { RepoProps } from '@/lib/types'
 import { COLOURS } from '@/lib/constants'
-import { Sparkle, Star } from '@phosphor-icons/react'
 import { useActions, useUIState } from 'ai/rsc'
+import { Sparkle, Star } from '@phosphor-icons/react'
 
 function Repositories({ props: repos }: { props: RepoProps[] }) {
   const { readmeAction, dirAction } = useActions()
   const [action, setAction] = React.useState('')
   const [messages, setMessages] = useUIState<typeof AI>()
-  // console.log(repos)
 
   function findColour(language: string): string {
     const entry = Object.entries(COLOURS).find(([key]) => key === language)
@@ -53,8 +52,8 @@ function Repositories({ props: repos }: { props: RepoProps[] }) {
     {
       name: 'Show Directory',
       value: 'show-directory',
-      function: async (repo: string, owner: string, commits: string) => {
-        const response = await dirAction(repo, owner, commits)
+      function: async (repo: string, owner: string) => {
+        const response = await dirAction(repo, owner)
         setMessages((currentMessages) => [
           ...currentMessages,
           response.newMessage,
@@ -69,7 +68,7 @@ function Repositories({ props: repos }: { props: RepoProps[] }) {
         repos.map((r, index) => {
           return (
             <div className='w-full border p-3 rounded-md mb-2' key={index}>
-              <div className='flex items-start justify-between gap-3'>
+              <div className='flex flex-col md:flex-row items-start justify-between gap-3'>
                 <div className='flex gap-2'>
                   <div className='p-0.5'>
                     <div className='rounded-md size-[25px] overflow-hidden'>
@@ -145,11 +144,11 @@ function Repositories({ props: repos }: { props: RepoProps[] }) {
                   </div>
                 </div>
                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild className='flex justify-end'>
+                  <DropdownMenuTrigger asChild className='flex justify-end w-full md:w-min'>
                     <Button
                       variant='ghost'
                       size={'sm'}
-                      className='flex text-sm items-center gap-1 font-normal border-b'
+                      className='flex text-sm items-center gap-1 font-normal border justify-center'
                     >
                       <span>
                         <Sparkle />
@@ -170,13 +169,13 @@ function Repositories({ props: repos }: { props: RepoProps[] }) {
                             key={action.value}
                             value={action.value}
                             className='p-2 cursor-pointer'
-                            onSelect={async () =>
-                              action.value === 'show-readme'
-                                ? await action.function(r.name, r.owner.login, '')
-                                : action.value === 'show-directory'
-                                  ? await action.function(r.name, r.owner.login, r.commits_url)
-                                  : null
-                            }
+                            onSelect={async () => {
+                              if (action.value === 'show-readme') {
+                                await action.function(r.name, r.owner.login)
+                              } else if (action.value === 'show-directory') {
+                                await action.function(r.name, r.owner.login)
+                              }
+                            }}
                           >
                             {action.name}
                           </DropdownMenuRadioItem>

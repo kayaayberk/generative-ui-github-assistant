@@ -9,17 +9,23 @@ import {
 import { Button } from '../ui/button'
 import { Directory as Dir } from '@/lib/types'
 import React, { useEffect, useState } from 'react'
+import { useDecoder } from '@/lib/hooks/use-decoder'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { useCopyToClipboard } from '@/lib/hooks/use-copy-to-clipboard'
 import { Check, Copy, File, FolderSimple } from '@phosphor-icons/react'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism'
+import { useGetDirectoryContent } from '@/lib/hooks/use-get-directory-content'
 
-export default function Directory({ props }: { props: Dir[] }) {
+export default function Directory({ props: directory }: { props: Dir[] }) {
   return (
-    <Accordion type='single' collapsible className='max-w-2xl'>
+    <Accordion
+      type='single'
+      collapsible
+      className='max-w-[330px] sm:max-w-[630px]'
+    >
       <div className='border rounded-md p-2'>
-        {Array.isArray(props) &&
-          props
+        {Array.isArray(directory) &&
+          directory
             .sort((a, b) => {
               if (a.type === 'dir' && b.type === 'file') {
                 return -1
@@ -70,62 +76,61 @@ export default function Directory({ props }: { props: Dir[] }) {
 }
 
 function DropdownContent({ url }: { url: string }) {
-  const [fetchedData, setFetchedData] = useState<any[]>([])
-
-  useEffect(() => {
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => setFetchedData(data))
-    console.log(fetchedData)
-  }, [url])
+  const data = useGetDirectoryContent(url)
+  if (!data) {
+    return null
+  }
+  const { fetchedData, isLoading } = data
 
   return (
     <Accordion type='single' collapsible className='ml-5'>
-      {fetchedData
-        .sort((a, b) => {
-          if (a.type === 'dir' && b.type === 'file') {
-            return -1
-          } else if (a.type === 'file' && b.type === 'dir') {
-            return 1
-          } else {
-            return 0
-          }
-        })
-        .map((item, index) => {
-          return item.type === 'file' ? (
-            <AccordionItem
-              value={`item-${index}`}
-              className='gap-1 w-full p-2 text-sm font-semibold '
-              key={index}
-            >
-              <AccordionTrigger
+      {fetchedData &&
+        Array.isArray(fetchedData) &&
+        fetchedData
+          .sort((a, b) => {
+            if (a.type === 'dir' && b.type === 'file') {
+              return -1
+            } else if (a.type === 'file' && b.type === 'dir') {
+              return 1
+            } else {
+              return 0
+            }
+          })
+          .map((item, index) => {
+            return item.type === 'file' ? (
+              <AccordionItem
                 value={`item-${index}`}
+                className='gap-1 w-full p-2 text-sm font-semibold '
                 key={index}
-                className=' p-0 ml-1.5 flex justify-start'
               >
-                <span className='flex items-center gap-1 ml-2'>
-                  <File size={18} color='#c2c2c2' weight='fill' />
-                  <span>{item.name}</span>
-                </span>
-              </AccordionTrigger>
-              <AccordionContent>
-                <DropdownFileContent url={item.url} />
-              </AccordionContent>
-            </AccordionItem>
-          ) : (
-            <AccordionItem value={`item-${index}`} key={index} className=''>
-              <AccordionTrigger className='p-2 justify-start gap-2 text-sm font-semibold ml-1.5'>
-                <span className='flex items-center gap-1'>
-                  <FolderSimple size={18} color='#c2c2c2' weight='fill' />
-                  <span>{item.name}</span>
-                </span>
-              </AccordionTrigger>
-              <AccordionContent>
-                <DropdownContent url={item._links.self} />
-              </AccordionContent>
-            </AccordionItem>
-          )
-        })}
+                <AccordionTrigger
+                  value={`item-${index}`}
+                  key={index}
+                  className=' p-0 ml-1.5 flex justify-start'
+                >
+                  <span className='flex items-center gap-1 ml-2'>
+                    <File size={18} color='#c2c2c2' weight='fill' />
+                    <span>{item.name}</span>
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <DropdownFileContent url={item.url} />
+                </AccordionContent>
+              </AccordionItem>
+            ) : (
+              <AccordionItem value={`item-${index}`} key={index} className=''>
+                <AccordionTrigger className='p-2 justify-start gap-2 text-sm font-semibold ml-1.5'>
+                  <span className='flex items-center gap-1'>
+                    <FolderSimple size={18} color='#c2c2c2' weight='fill' />
+                    <span>{item.name}</span>
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <DropdownContent url={item._links.self} />
+                </AccordionContent>
+              </AccordionItem>
+            )
+          })}
     </Accordion>
   )
 }
@@ -137,20 +142,16 @@ function DropdownFileContent({
   url: string
   className?: string
 }) {
-  const [fetchedData, setFetchedData] = useState<string>('')
   const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 })
+  const data = useDecoder(url)
 
-  useEffect(() => {
-    fetch(url)
-      .then((response) => response.json())
-      .then(
-        (data) =>
-          (data.content = Buffer.from(data.content, 'base64').toString('utf8')),
-      )
-      .then((decodedData) => setFetchedData(decodedData))
-  }, [url])
+  if (!data) {
+    return null
+  }
 
-  
+  const { fetchedData } = data
+  console.log(fetchedData)
+
   const match = /language-(\w+)/.exec(className || '')
 
   const onCopy = () => {
@@ -159,7 +160,7 @@ function DropdownFileContent({
   }
 
   return (
-    <div className='relative max-w-max mt-4 font-sans codeblock bg-zinc-950 rounded-md border'>
+    <div className='relative md:w-full mt-4 font-sans codeblock bg-zinc-950 rounded-md border'>
       <div className='flex items-center justify-between w-full px-6 py-1 pr-2 rounded-t-md bg-zinc-800 text-zinc-100'>
         <span className='text-xs lowercase'>{(match && match[1]) || ''}</span>
         <div className='flex items-center space-x-1'>

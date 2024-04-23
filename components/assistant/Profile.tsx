@@ -15,11 +15,15 @@ export function Profile({ props: username }: { props: GithubUser }) {
   // Unique identifier for this UI component.
   const id = React.useId()
 
+  if (!username) {
+    return null
+  }
+
   return (
     <>
       <div className='w-full border p-3 rounded-md'>
-        <div className='flex justify-between'>
-          <div className='flex items-start gap-3'>
+        <div className='flex flex-col md:flex md:flex-row md:justify-between gap-4 md:gap-2'>
+          <div className='flex items-start gap-3 w-full'>
             <div className='p-0.5'>
               <div className='rounded-full size-[45px] overflow-hidden'>
                 <Image
@@ -30,7 +34,7 @@ export function Profile({ props: username }: { props: GithubUser }) {
                 />
               </div>
             </div>
-            <div className='flex flex-col gap-1'>
+            <div className='flex flex-col gap-1 w-full'>
               <div className='flex items-center gap-1'>
                 <Link
                   target='_blank'
@@ -71,25 +75,25 @@ export function Profile({ props: username }: { props: GithubUser }) {
               </div>
             </div>
           </div>
+          <Button
+            variant='ghost'
+            className='text-sm font-normal border flex items-center gap-1'
+            size={'sm'}
+            onClick={async () => {
+              const response = await repoAction(username.login)
+              setMessages((currentMessages) => [
+                ...currentMessages,
+                response.newMessage,
+              ])
+            }}
+          >
+            <span>
+              <Sparkle />
+            </span>
+            Show Repositories
+          </Button>
         </div>
       </div>
-      <Button
-        variant='ghost'
-        className='text-sm font-normal border-b mt-2 flex items-center gap-1'
-        size={'sm'}
-        onClick={async () => {
-          const response = await repoAction(username.login)
-          setMessages((currentMessages) => [
-            ...currentMessages,
-            response.newMessage,
-          ])
-        }}
-      >
-        <span>
-          <Sparkle />
-        </span>
-        Show Repositories
-      </Button>
     </>
   )
 }
