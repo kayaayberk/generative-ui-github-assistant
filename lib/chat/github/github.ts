@@ -1,13 +1,52 @@
 import { auth } from '@clerk/nextjs'
 import { getGithubAccessToken } from '@/app/actions'
 import {
+  Readme,
+  RepoProps,
   Directory,
   GithubUser,
   ListOfUsers,
-  Readme,
   RepoFetchProps,
-  RepoProps,
 } from '@/lib/types'
+
+export const checkRateLimit = async () => {
+  const { userId } = auth()
+  let accessToken
+  if (userId) {
+    accessToken = await getGithubAccessToken(userId)
+  }
+  const headers = createHeaders(accessToken)
+
+  const res = await fetch(`https://api.github.com/rate_limit`, {
+    method: 'GET',
+    headers,
+  })
+
+  const rateLimitData = await res.json()
+  const remaining: number = rateLimitData.resources.core.remaining
+  return remaining
+}
+
+function createHeaders(accessToken?: string): {
+  Accept: string
+  'X-GitHub-Api-Version': string
+  Authorization?: string
+} {
+  const headers: {
+    Accept: string
+    'X-GitHub-Api-Version': string
+    Authorization?: string
+  } = {
+    Accept: 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+  }
+
+  if (accessToken) {
+    headers.Authorization = `Bearer ${accessToken}`
+  }
+
+  return headers
+}
 
 /**
  * This TypeScript function fetches and returns a GitHub user's profile data using the GitHub API.
@@ -18,18 +57,17 @@ import {
  */
 export const getGithubProfile = async (username: string) => {
   const { userId } = auth()
-  if (!userId) {
-    throw new Error('userId not found')
+  let accessToken
+  if (userId) {
+    const accessToken = await getGithubAccessToken(userId)
   }
-  const accessToken = await getGithubAccessToken(userId)
+  const headers = createHeaders(accessToken)
+
   const res = await fetch(`https://api.github.com/users/${username}`, {
     method: 'GET',
-    headers: {
-      Accept: 'application/vnd.github+json',
-      Authorization: `Bearer ${accessToken}`,
-      'X-GitHub-Api-Version': '2022-11-28',
-    },
+    headers,
   })
+  console.log('Remaining rate limit:', res.headers.get('x-ratelimit-remaining'))
 
   const githubUserData: GithubUser = await res.json()
   return githubUserData as GithubUser
@@ -48,19 +86,17 @@ export const getGithubProfile = async (username: string) => {
  */
 export const listUsers = async (query: string) => {
   const { userId } = auth()
-  if (!userId) {
-    throw new Error('userId not found')
+  let accessToken
+  if (userId) {
+    const accessToken = await getGithubAccessToken(userId)
   }
-  const accessToken = await getGithubAccessToken(userId)
+  const headers = createHeaders(accessToken)
+
   const res = await fetch(
     `https://api.github.com/search/users?q=${query}&per_page=4&page=1`,
     {
       method: 'GET',
-      headers: {
-        Accept: 'application/vnd.github+json',
-        Authorization: `Bearer ${accessToken}`,
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
+      headers,
     },
   )
 
@@ -104,19 +140,17 @@ export const convertUserType = async (query: string) => {
  */
 export const searchRespositories = async (query: string) => {
   const { userId } = auth()
-  if (!userId) {
-    throw new Error('userId not found')
+  let accessToken
+  if (userId) {
+    const accessToken = await getGithubAccessToken(userId)
   }
-  const accessToken = await getGithubAccessToken(userId)
+  const headers = createHeaders(accessToken)
+
   const res = await fetch(
     `https://api.github.com/search/repositories?q=${query}&per_page=4&page=1`,
     {
       method: 'GET',
-      headers: {
-        Accept: 'application/vnd.github+json',
-        Authorization: `Bearer ${accessToken}`,
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
+      headers,
     },
   )
 
@@ -126,24 +160,35 @@ export const searchRespositories = async (query: string) => {
   return items as RepoProps[]
 }
 
+/**
+ * The function `getReadme` retrieves the README.md file content from a specified GitHub repository
+ * using the GitHub API, decodes the content from base64, and returns it as a string.
+ * @param {string} repo - The `repo` parameter in the `getReadme` function refers to the name of the
+ * repository you want to retrieve the README file from. It is a string that represents the repository
+ * name on GitHub.
+ * @param {string} owner - The `owner` parameter in the `getReadme` function refers to the owner or
+ * organization that owns the GitHub repository from which you want to fetch the README file. This
+ * could be an individual user or a GitHub organization.
+ * @returns The `getReadme` function returns a Promise that resolves to a `Readme` object. The `Readme`
+ * object contains information about the README file of a specific GitHub repository, including the
+ * decoded content of the README file in UTF-8 format.
+ */
 export const getReadme = async (
   repo: string,
   owner: string,
 ): Promise<Readme> => {
   const { userId } = auth()
-  if (!userId) {
-    throw new Error('userId not found')
+  let accessToken
+  if (userId) {
+    const accessToken = await getGithubAccessToken(userId)
   }
-  const accessToken = await getGithubAccessToken(userId)
+  const headers = createHeaders(accessToken)
+
   const res = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/contents/README.md`,
     {
       method: 'GET',
-      headers: {
-        Accept: 'application/vnd.github.json',
-        Authorization: `Bearer ${accessToken}`,
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
+      headers,
     },
   )
   const readme: Readme = await res.json()
@@ -153,6 +198,8 @@ export const getReadme = async (
   return readme
 }
 
+/* The `export const getDir` function is an asynchronous function that fetches the contents of a
+directory in a GitHub repository. Here's a breakdown of what the function does: */
 export const getDir = async ({
   repo,
   owner,
@@ -161,24 +208,79 @@ export const getDir = async ({
   owner: string
 }): Promise<Directory[]> => {
   const { userId } = auth()
-  if (!userId) {
-    throw new Error('userId not found')
+  let accessToken
+  if (userId) {
+    const accessToken = await getGithubAccessToken(userId)
   }
-  const accessToken = await getGithubAccessToken(userId)
+  const headers = createHeaders(accessToken)
 
   const res = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/contents/`,
     {
       method: 'GET',
-      headers: {
-        Accept: 'application/vnd.github+json',
-        Authorization: `Bearer ${accessToken}`,
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
+      headers,
     },
   )
-  const dir = await res.json()
-  // console.log('dir:', dir) // Debugging line
+  const dir: Directory[] = await res.json()
+
   return dir
 }
-// getDir({user: 'kayaayberk', repo: 'generative-ui-github-assistant'})
+
+/**
+ * The functions `getDirContent` and `decodeContent` are used to fetch directory content and decode
+ * content from a specified URL using a GitHub access token.
+ * @param {string} url - The `url` parameter in both functions represents the URL from which you want
+ * to fetch data. It is a string that specifies the location of the resource you want to access.
+ * @param {string | null} userId - The `userId` parameter is a string that represents the user ID of
+ * the current user. It is used to authenticate and authorize the user to access certain resources or
+ * perform specific actions within the application. In the provided code snippets, the `userId` is used
+ * to retrieve an access token for making requests to
+ * @returns For the `getDirContent` function, a Promise of an array of Directory objects is being
+ * returned.
+ */
+export const getDirContent = async (
+  url: string,
+  userId: string | null,
+): Promise<Directory[]> => {
+  let accessToken
+  if (userId) {
+    const accessToken = await getGithubAccessToken(userId)
+  }
+  const headers = createHeaders(accessToken)
+
+  const res = await fetch(url, {
+    method: 'GET',
+    headers,
+  })
+  const content: Directory[] = await res.json()
+  return content
+}
+
+/**
+ * The function `decodeContent` asynchronously fetches content from a specified URL using a GET request
+ * with optional authentication based on the user ID.
+ * @param {string} url - The `url` parameter is a string that represents the URL from which the content
+ * will be fetched.
+ * @param {string | null} userId - The `userId` parameter is a string that represents the user's
+ * identification. It can be used to retrieve the access token for the user from GitHub in order to
+ * make authenticated requests. If `userId` is provided, the function will attempt to fetch the access
+ * token for that user before making the request to
+ * @returns The `decodeContent` function returns a Promise that resolves to a string.
+ */
+export const decodeContent = async (
+  url: string,
+  userId: string | null,
+): Promise<string> => {
+  let accessToken
+  if (userId) {
+    const accessToken = await getGithubAccessToken(userId)
+  }
+  const headers = createHeaders(accessToken)
+
+  const res = await fetch(url, {
+    method: 'GET',
+    headers,
+  })
+  const { content }: Directory = await res.json()
+  return content
+}

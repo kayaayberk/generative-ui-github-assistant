@@ -2,7 +2,12 @@ import 'server-only'
 import { AI } from './actions'
 import { nanoid } from 'nanoid'
 import { runAsyncFnWithoutBlocking } from '../utils'
-import { getDir, getReadme, searchRespositories } from './github/github'
+import {
+  checkRateLimit,
+  getDir,
+  getReadme,
+  searchRespositories,
+} from './github/github'
 import { BotCard } from '@/components/assistant/Message'
 import Repositories from '@/components/assistant/Repositories'
 import { createStreamableUI, getMutableAIState } from 'ai/rsc'
@@ -11,6 +16,7 @@ import { Spinner } from '@/components/assistant/Spinner'
 import { Readme } from '@/components/assistant/Readme'
 import Directory from '@/components/assistant/Directory'
 import { Readme as RM } from '../types'
+import RateLimited from '@/components/RateLimited'
 
 export async function repoAction(username: string) {
   'use server'
@@ -31,6 +37,7 @@ export async function repoAction(username: string) {
         <ProfileSkeleton />
       </BotCard>,
     )
+    const rateLimitRemaining = await checkRateLimit()
     const repositories = await searchRespositories(`user:${username}`)
 
     loadingRepos.done(
@@ -41,7 +48,11 @@ export async function repoAction(username: string) {
 
     systemMessage.done(
       <BotCard>
-        <Repositories props={repositories} />
+        {rateLimitRemaining === 0 ? (
+          <RateLimited />
+        ) : (
+          <Repositories props={repositories} />
+        )}
       </BotCard>,
     )
 
@@ -88,7 +99,7 @@ export async function readmeAction(repo: string, owner: string) {
         <ProfileSkeleton />
       </BotCard>,
     )
-
+    const rateLimitRemaining = await checkRateLimit()
     const readme: RM = await getReadme(repo, owner)
 
     loadingReadme.done(
@@ -99,7 +110,11 @@ export async function readmeAction(repo: string, owner: string) {
 
     systemMessage.done(
       <BotCard>
-        <Readme props={readme.content} />
+        {rateLimitRemaining === 0 ? (
+          <RateLimited />
+        ) : (
+          <Readme props={readme.content} />
+        )}
       </BotCard>,
     )
 
@@ -146,9 +161,8 @@ export async function dirAction(repo: string, owner: string) {
         <ProfileSkeleton />
       </BotCard>,
     )
-
+    const rateLimitRemaining = await checkRateLimit()
     const directory = await getDir({ repo, owner })
-    console.log('directory:', directory)
 
     loadingDirectory.done(
       <BotCard>
@@ -158,7 +172,11 @@ export async function dirAction(repo: string, owner: string) {
 
     systemMessage.done(
       <BotCard>
-        <Directory props={directory} />
+        {rateLimitRemaining === 0 ? (
+          <RateLimited />
+        ) : (
+          <Directory props={directory} />
+        )}
       </BotCard>,
     )
 

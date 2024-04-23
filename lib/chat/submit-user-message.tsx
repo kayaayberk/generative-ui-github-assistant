@@ -1,6 +1,7 @@
 import 'server-only'
 
 import {
+  checkRateLimit,
   convertUserType,
   getDir,
   getGithubProfile,
@@ -24,6 +25,7 @@ import { ProfileSkeleton } from '@/components/assistant/ProfileSkeleton'
 import { createStreamableValue, getMutableAIState, render } from 'ai/rsc'
 import Directory from '@/components/assistant/Directory'
 import { Readme } from '@/components/assistant/Readme'
+import RateLimited from '@/components/RateLimited'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || '',
@@ -107,8 +109,8 @@ export async function submitUserMessage(content: string, attribute: string) {
               <ProfileSkeleton />
             </BotCard>
           )
+          const rateLimitRemaining = await checkRateLimit()
           const profile = await getGithubProfile(username)
-          // console.log('profile', profile)
 
           aiState.done({
             ...aiState.get(),
@@ -123,21 +125,13 @@ export async function submitUserMessage(content: string, attribute: string) {
             ],
           })
 
-          // aiState.update({
-          //   ...aiState.get(),
-          //   messages: [
-          //     ...aiState.get().messages,
-          //     {
-          //       id: nanoid(),
-          //       role: 'system' as const,
-          //       content: `[GitHub Profile of '${profile?.login}']`,
-          //     },
-          //   ],
-          // })
-
           return (
             <BotCard>
-              <Profile props={profile} />
+              {rateLimitRemaining === 0 ? (
+                <RateLimited />
+              ) : (
+                <Profile props={profile} />
+              )}
             </BotCard>
           )
         },
@@ -153,7 +147,7 @@ export async function submitUserMessage(content: string, attribute: string) {
               <ProfileSkeleton />
             </BotCard>
           )
-
+          const rateLimitRemaining = await checkRateLimit()
           const profiles = await convertUserType(query)
           aiState.done({
             ...aiState.get(),
@@ -181,7 +175,11 @@ export async function submitUserMessage(content: string, attribute: string) {
 
           return (
             <BotCard>
-              <ProfileList props={profiles} />
+              {rateLimitRemaining === 0 ? (
+                <RateLimited />
+              ) : (
+                <ProfileList props={profiles} />
+              )}
             </BotCard>
           )
         },
@@ -197,7 +195,7 @@ export async function submitUserMessage(content: string, attribute: string) {
               <ProfileSkeleton />
             </BotCard>
           )
-
+          const rateLimitRemaining = await checkRateLimit()
           const repositories = await searchRespositories(query)
 
           aiState.done({
@@ -215,7 +213,11 @@ export async function submitUserMessage(content: string, attribute: string) {
 
           return (
             <BotCard>
-              <Repositories props={repositories} />
+              {rateLimitRemaining === 0 ? (
+                <RateLimited />
+              ) : (
+                <Repositories props={repositories} />
+              )}
             </BotCard>
           )
         },
@@ -232,9 +234,8 @@ export async function submitUserMessage(content: string, attribute: string) {
               <ProfileSkeleton />
             </BotCard>
           )
-
+          const rateLimitRemaining = await checkRateLimit()
           const response = await getReadme(repo, owner)
-          // console.log(response, 'from readme')
 
           aiState.done({
             ...aiState.get(),
@@ -251,7 +252,11 @@ export async function submitUserMessage(content: string, attribute: string) {
 
           return (
             <BotCard>
-              <Readme props={response.content} />
+              {rateLimitRemaining === 0 ? (
+                <RateLimited />
+              ) : (
+                <Readme props={response.content} />
+              )}
             </BotCard>
           )
         },
@@ -268,7 +273,7 @@ export async function submitUserMessage(content: string, attribute: string) {
               <ProfileSkeleton />
             </BotCard>
           )
-
+          const rateLimitRemaining = await checkRateLimit()
           const response = await getDir({ repo, owner })
 
           aiState.done({
@@ -286,7 +291,11 @@ export async function submitUserMessage(content: string, attribute: string) {
 
           return (
             <BotCard>
-              <Directory props={response} />
+              {rateLimitRemaining === 0 ? (
+                <RateLimited />
+              ) : (
+                <Directory props={response} />
+              )}
             </BotCard>
           )
         },
