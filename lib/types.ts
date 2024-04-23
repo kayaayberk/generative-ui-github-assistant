@@ -84,4 +84,29 @@ export interface RepoProps {
   languages_url: string
   updated_at: string
   topics: string[]
+  commits_url: string
+}
+
+export interface Readme {
+  name: string
+  path: string
+  url: string
+  html_url: string
+  content: string
+  encoding: string
+}
+
+export interface Directory {
+  name: string
+  path: string
+  type: 'file' | 'dir'
+  url: string
+  html_url: string
+  sha: string
+  content: string
+  _links: {
+    git: string
+    self: string
+    html: string
+  }
 }
