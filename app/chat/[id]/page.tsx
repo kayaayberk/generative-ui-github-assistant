@@ -28,14 +28,12 @@ export default async function ChatPage({ params }: ChatPageProps) {
   }
 
   return (
-    <div className='flex flex-col size-full pt-16 px-0 mx-auto stretch'>
-      <AI initialAIState={{ chatId: chat[0].id, messages: chat[0].messages }}>
-        <Chat
-          id={chat[0].id}
-          initialMessages={chat[0].messages}
-          missingKeys={missingKeys}
-        />
-      </AI>
-    </div>
+    <AI initialAIState={{ chatId: chat[0].id, messages: chat[0].messages }}>
+      <Chat
+        id={chat[0].id}
+        initialMessages={chat[0].messages}
+        missingKeys={missingKeys}
+      />
+    </AI>
   )
 }

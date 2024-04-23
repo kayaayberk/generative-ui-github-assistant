@@ -1,19 +1,24 @@
-import { Toaster } from '@/components/ui/toaster'
 import './globals.css'
+import Link from 'next/link'
+import { Viewport } from 'next'
 import { Providers } from './providers'
-import { ClerkProvider } from '@clerk/nextjs'
-
-export const viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: 'white' },
-    { media: '(prefers-color-scheme: dark)', color: 'black' },
-  ],
-}
+import { ClerkProvider, auth } from '@clerk/nextjs'
+import { Toaster } from '@/components/ui/toaster'
+import { SignIn } from '@phosphor-icons/react/dist/ssr'
+import Navigation from '@/components/Navigation'
 interface RootLayoutProps {
   children: React.ReactNode
 }
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  minimumScale: 1,
+  maximumScale: 1,
+}
+
 export default function RootLayout({ children }: RootLayoutProps) {
+  const { userId } = auth()
   return (
     <ClerkProvider>
       <html lang='en' suppressHydrationWarning>
@@ -21,10 +26,15 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <Providers
             enableSystem
             attribute='class'
-            defaultTheme='system'
+            defaultTheme='dark'
             disableTransitionOnChange
           >
-            <main className='w-full h-screen flex-1 lg:flex'>{children}</main>
+            {!userId && (
+              <header className='fixed top-0 right-0 z-10 p-4 flex justify-end'>
+                <Navigation />
+              </header>
+            )}
+            {children}
             <Toaster />
           </Providers>
         </body>

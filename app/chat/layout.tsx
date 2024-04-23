@@ -1,16 +1,26 @@
 import Sidebar from '@/components/Sidebar'
+import { Viewport } from 'next'
 
 interface ChatLayoutProps {
   children: React.ReactNode
 }
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  minimumScale: 1,
+  maximumScale: 1,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: 'white' },
+    { media: '(prefers-color-scheme: dark)', color: 'black' },
+  ],
+}
+
 export default async function ChatLayout({ children }: ChatLayoutProps) {
   return (
-    <div className='relative flex w-full h-screen overflow-hidden'>
+    <div className='w-full flex h-screen'>
       <Sidebar />
-      <div className='group w-full overflow-auto pl-0 animate-in duration-300 ease-in-out peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]'>
-        {children}
-      </div>
+      {children}
     </div>
   )
 }

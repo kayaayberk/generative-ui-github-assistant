@@ -1,12 +1,11 @@
-import Chat from '@/components/Chat'
 import { nanoid } from '@/lib/utils'
+import Chat from '@/components/Chat'
 import { AI } from '@/lib/chat/actions'
-import { getMissingKeys } from '../actions'
+import { getMissingKeys } from './actions'
 
-export default async function IndexPage() {
+async function HomePage() {
   const missingKeys = await getMissingKeys()
   const id = nanoid()
-
   return (
     <AI initialAIState={{ chatId: id, messages: [] }}>
       <Chat
@@ -17,3 +16,5 @@ export default async function IndexPage() {
     </AI>
   )
 }
+
+export default HomePage
