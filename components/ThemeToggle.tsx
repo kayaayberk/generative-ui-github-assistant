@@ -9,13 +9,23 @@ function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme()
   return (
     <Button
-      variant='ghost'
-      size='icon'
+      variant='outline'
+      className='px-2'
       onClick={() => {
         setTheme(resolvedTheme === 'light' ? 'dark' : 'light')
       }}
     >
-      {resolvedTheme === 'dark' ? <Moon size={18} /> : <Sun size={18} />}
+      {resolvedTheme === 'dark' ? (
+        <span className='flex items-center justify-between gap-2 w-full'>
+          Theme
+          <Moon size={18} />
+        </span>
+      ) : (
+        <span className='flex items-center justify-between gap-2 w-full'>
+          Theme
+          <Sun size={18} />
+        </span>
+      )}
     </Button>
   )
 }

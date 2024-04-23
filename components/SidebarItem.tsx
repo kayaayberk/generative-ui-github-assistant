@@ -46,8 +46,8 @@ function SidebarItem({ index, chat, children }: SidebarItemProps) {
         href={chat.path}
         className={`${
           isActive
-            ? 'bg-gray-400/40 dark:bg-white/20 font-medium'
-            : 'hover:bg-gray-200 dark:text-white/80 dark:hover:bg-gray-500/20'
+            ? 'bg-gray-400/40 dark:bg-white/20 font-normal shadow-md'
+            : 'hover:bg-gray-200 hover:shadow-md dark:text-white/80 dark:hover:bg-gray-500/20'
         } py-1 rounded-md overflow-hidden whitespace-nowrap px-2 font-light text-sm tracking-wide flex items-center gap-2 w-full`}
         // prefetch={true}
       >
