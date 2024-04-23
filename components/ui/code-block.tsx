@@ -82,9 +82,12 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
         showLineNumbers
         customStyle={{
           margin: 0,
-          width: '100%',
+          width: 'auto',
+          height: 'auto' ,
           background: 'transparent',
           padding: '1.5rem 1rem',
+          overflowX: 'scroll',
+          overflowY: 'scroll',
         }}
         lineNumberStyle={{
           userSelect: 'none',
