@@ -55,7 +55,7 @@ function ChatPanel() {
         <p
           className={`${isSignedIn ? 'hidden' : 'block'} text-xs text-center px-6 md:text-sm tracking-normal text-zinc-600`}
         >
-          Actions related to GitHub are tightly rate-limited. Please sign in not
+          Actions related to GitHub are tightly rate-limited. Please sign in with GitHub not
           to get rate-limited.
         </p>
         {/* <Link

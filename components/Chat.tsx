@@ -78,13 +78,13 @@ function Chat({ id, missingKeys }: ChatProps) {
       className={`size-full`}
     >
       <ScrollArea className='size-full'>
-        <div ref={ref} className={`w-full sm:max-w-2xl mx-auto sm:pt-0 pt-14 pb-36 sm:pb-28 ${isSidebarOpen ? 'lg:translate-x-[100px]' : ''} transition-all duration-300 ${messages.length !== 0 && 'px-3'}`}>
+        <div ref={ref} className={`w-full sm:max-w-2xl mx-auto sm:pt-0 pt-14 pb-36 sm:pb-28 ${isSidebarOpen && isSignedIn ? 'lg:translate-x-[100px]' : ''} transition-all duration-300 ${messages.length !== 0 && 'px-3'}`}>
           <ChatMessage messages={messages} />
         </div>
         <ChatPanel />
       </ScrollArea>
       <div
-        className={`${messages.length !== 0 || pathname === '/chat' ? 'block' : 'hidden'} ${isSidebarOpen ? 'lg:translate-x-[100px]' : ''} w-full mx-auto transition-all duration-300 fixed bottom-0 bg-gradient-to-t from-background to-transparent via-background`}
+        className={`${messages.length !== 0 || pathname === '/chat' || pathname === '/' ? 'block' : 'hidden'} ${isSidebarOpen && isSignedIn ? 'lg:translate-x-[100px]' : ''} w-full mx-auto transition-all duration-300 fixed bottom-0 bg-gradient-to-t from-background to-transparent via-background`}
       >
         <PromptForm input={input} setInput={setInput} />
         <p className='text-xs text-center px-6 mb-2 hidden sm:block tracking-normal text-zinc-600 mt-1'>
