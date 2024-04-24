@@ -53,6 +53,7 @@ export interface AttributeTypes {
   value: string
   role: string
   icon?: React.ReactNode
+  status: string
 }
 
 export interface RepoFetchProps {
