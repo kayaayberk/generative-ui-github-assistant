@@ -4,9 +4,10 @@ import { nanoid } from 'nanoid'
 import { UserMessage } from './assistant/Message'
 import { useAIState, useActions, useUIState } from 'ai/rsc'
 import { AI } from '@/lib/chat/actions'
-import { GithubLogo } from '@phosphor-icons/react'
+import { ArrowRight, GithubLogo } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { useUser } from '@clerk/nextjs'
+import { useSidebar } from '@/lib/hooks/use-sidebar'
 
 function ChatPanel() {
   const exampleMessages = [
@@ -28,7 +29,7 @@ function ChatPanel() {
     },
     {
       heading: 'Show README.md of',
-      subheading: `Reduxjs/redux?`,
+      subheading: 'Reduxjs/redux?',
       message: `Show README.md of Reduxjs/redux`,
     },
   ]
@@ -36,17 +37,18 @@ function ChatPanel() {
   const { submitUserMessage } = useActions()
   const [messages, setMessages] = useUIState<typeof AI>()
   const { isSignedIn, user } = useUser()
+  const { isSidebarOpen, isLoading, toggleSidebar } = useSidebar()
 
   return (
     <div
-      className={`${messages.length === 0 ? 'block' : 'hidden'} flex flex-col gap-5 h-full items-center justify-center max-w-2xl mx-auto`}
+      className={`${messages.length === 0 ? 'block px-2 sm:px-0 mt-10 sm:mt-60' : 'hidden'} ${!isSidebarOpen || !isSignedIn ? '' : 'lg:translate-x-[100px]'} transition-all duration-300 flex flex-col gap-5 h-full items-center justify-center max-w-2xl mx-auto`}
     >
       <div
         className={`${messages.length > 0 ? 'hidden' : 'block'} mx-auto w-full flex flex-col gap-4 z-10 justify-center items-center`}
       >
-        <h1 className='text-4xl flex items-center whitespace-nowrap md:text-[65px] font-bold tracking-wider leading-none'>
+        <h1 className='text-4xl flex items-center whitespace-nowrap md:text-[65px] font-extrabold tracking-wider leading-none'>
           <GithubLogo />
-          <span className='bg-gradient-to-t from-white/50 to-white bg-clip-text text-transparent'>
+          <span className='bg-gradient-to-t dark:from-white/50 from-black/50 to-black dark:to-white bg-clip-text text-transparent'>
             GitHub Assistant
           </span>
         </h1>
@@ -66,11 +68,11 @@ function ChatPanel() {
       <div
         className={`${messages.length > 0 ? 'hidden' : 'block'} mx-auto w-full`}
       >
-        <div className='grid grid-cols-2 gap-2'>
+        <div className='flex flex-col gap-2 px-4'>
           {exampleMessages.map((example, index) => (
             <div
               key={example.heading}
-              className={`cursor-pointer rounded-md border bg-white p-3 hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-zinc-900 
+              className={`cursor-pointer rounded-md bg-white p-3 hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-zinc-900 hover:translate-x-3 transition-all duration-300
 
             `}
               onClick={async () => {
@@ -90,11 +92,12 @@ function ChatPanel() {
                 ])
               }}
             >
-              <div className='text-xs md:text-sm font-semibold'>
-                {example.heading}
-              </div>
-              <div className='text-xs md:text-sm text-zinc-600'>
-                {example.subheading}
+              <div className='flex items-center gap-2 text-xs md:text-sm font-extralight tracking-wide'>
+                <ArrowRight />
+                <span className='space-x-1'>
+                  <span className='font-medium'>{example.heading}</span>
+                  <span className=''>{example.subheading}</span>
+                </span>
               </div>
             </div>
           ))}

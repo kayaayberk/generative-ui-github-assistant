@@ -48,6 +48,7 @@ function Repositories({ props: repos }: { props: RepoProps[] }) {
           response.newMessage,
         ])
       },
+      status: 'active',
     },
     {
       name: 'Show Directory',
@@ -59,6 +60,13 @@ function Repositories({ props: repos }: { props: RepoProps[] }) {
           response.newMessage,
         ])
       },
+      status: 'active',
+    },
+    {
+      name: 'Code Search',
+      value: 'code-search',
+      function: async () => {},
+      status: 'disabled',
     },
   ]
 
@@ -144,7 +152,10 @@ function Repositories({ props: repos }: { props: RepoProps[] }) {
                   </div>
                 </div>
                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild className='flex justify-end w-full md:w-min'>
+                  <DropdownMenuTrigger
+                    asChild
+                    className='flex justify-end w-full md:w-min'
+                  >
                     <Button
                       variant='ghost'
                       size={'sm'}
@@ -166,6 +177,7 @@ function Repositories({ props: repos }: { props: RepoProps[] }) {
                       {RepoActions.map((action) => {
                         return (
                           <DropdownMenuRadioItem
+                            disabled={action.status === 'disabled'}
                             key={action.value}
                             value={action.value}
                             className='p-2 cursor-pointer'

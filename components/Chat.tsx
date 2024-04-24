@@ -1,7 +1,6 @@
 'use client'
 
 import { Message } from 'ai'
-import Link from 'next/link'
 import ChatPanel from './ChatPanel'
 import { sleep } from '@/lib/utils'
 import { useUser } from '@clerk/nextjs'
@@ -9,11 +8,11 @@ import { useToast } from './ui/use-toast'
 import { PromptForm } from './PromptForm'
 import { ChatMessage } from './ChatMessage'
 import { ScrollArea } from './ui/scroll-area'
-import { GithubLogo, SignIn } from '@phosphor-icons/react'
 import { useUIState, useAIState } from 'ai/rsc'
 import { useEffect, useRef, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useLocalStorage } from '@/lib/hooks/use-local-storage'
+import { useSidebar } from '@/lib/hooks/use-sidebar'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -31,11 +30,11 @@ function Chat({ id, missingKeys }: ChatProps) {
 
   const router = useRouter()
   const pathname = usePathname()
-  console.log(pathname)
 
   const { toast } = useToast()
 
   const [_, setNewChatId] = useLocalStorage('newChatId', id)
+  const { isSidebarOpen, isLoading, toggleSidebar } = useSidebar()
 
   useEffect(() => {
     if (isSignedIn) {
@@ -75,23 +74,25 @@ function Chat({ id, missingKeys }: ChatProps) {
   }, [messages, ref?.current?.scrollHeight])
 
   return (
-    <>
-      <div className={`relative size-full pb-32 pt-10 sm:pb-20 ${messages.length === 0 ? 'px-4 pt-40 sm:pt-60' : 'px-2'}`}>
-        <ScrollArea ref={ref} className='size-full'>
-          <div className='w-full sm:max-w-2xl mx-auto pb-10 '>
-            <ChatMessage messages={messages} />
-          </div>
-          <ChatPanel />
-        </ScrollArea>
-        <div
-          className={`${messages.length !== 0 || pathname === '/chat' ? 'block' : 'hidden'} w-full mx-auto`}
-        >
-          <PromptForm input={input} setInput={setInput} />
-          <p className='text-xs text-center px-6 md:text-sm  hidden sm:block tracking-normal text-zinc-600 mt-1'>GitHub assistant is a personal and experimental project. Please do not
-        abuse it in term of token usage.</p>
+    <div
+      className={`size-full`}
+    >
+      <ScrollArea className='size-full'>
+        <div ref={ref} className={`w-full sm:max-w-2xl mx-auto sm:pt-0 pt-14 pb-36 sm:pb-28 ${isSidebarOpen ? 'lg:translate-x-[100px]' : ''} transition-all duration-300 ${messages.length !== 0 && 'px-3'}`}>
+          <ChatMessage messages={messages} />
         </div>
+        <ChatPanel />
+      </ScrollArea>
+      <div
+        className={`${messages.length !== 0 || pathname === '/chat' ? 'block' : 'hidden'} ${isSidebarOpen ? 'lg:translate-x-[100px]' : ''} w-full mx-auto transition-all duration-300 fixed bottom-0 bg-gradient-to-t from-background to-transparent via-background`}
+      >
+        <PromptForm input={input} setInput={setInput} />
+        <p className='text-xs text-center px-6 mb-2 hidden sm:block tracking-normal text-zinc-600 mt-1'>
+          GitHub assistant is a personal and experimental project. Please do not
+          abuse it in term of token usage.
+        </p>
       </div>
-    </>
+    </div>
   )
 }
 

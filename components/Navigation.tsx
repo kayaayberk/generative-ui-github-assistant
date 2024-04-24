@@ -40,7 +40,6 @@ const components: { title: string; href: string; icon: any }[] = [
 ]
 
 export default function Navigation() {
-  const { isSignedIn, user } = useUser()
   return (
     <NavigationMenu>
       <NavigationMenuList>

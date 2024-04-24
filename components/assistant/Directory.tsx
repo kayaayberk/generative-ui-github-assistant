@@ -18,11 +18,7 @@ import { useGetDirectoryContent } from '@/lib/hooks/use-get-directory-content'
 
 export default function Directory({ props: directory }: { props: Dir[] }) {
   return (
-    <Accordion
-      type='single'
-      collapsible
-      className='max-w-[330px] sm:max-w-[630px]'
-    >
+    <Accordion type='single' collapsible className=''>
       <div className='border rounded-md p-2'>
         {Array.isArray(directory) &&
           directory
@@ -150,7 +146,6 @@ function DropdownFileContent({
   }
 
   const { fetchedData } = data
-  console.log(fetchedData)
 
   const match = /language-(\w+)/.exec(className || '')
 

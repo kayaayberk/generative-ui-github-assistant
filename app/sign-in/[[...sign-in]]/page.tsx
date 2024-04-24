@@ -3,7 +3,7 @@ import React from 'react'
 
 function SignInPage() {
   return (
-    <div className='flex justify-center w-full items-center'>
+    <div className='flex justify-center size-full items-center'>
       <SignIn afterSignInUrl={'/chat'} />
     </div>
   )
