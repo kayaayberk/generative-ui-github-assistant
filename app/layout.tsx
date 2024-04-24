@@ -1,5 +1,5 @@
 import './globals.css'
-import { Viewport } from 'next'
+import { Metadata, Viewport } from 'next'
 import { Providers } from './providers'
 import Navigation from '@/components/Navigation'
 import { Toaster } from '@/components/ui/toaster'
@@ -12,6 +12,26 @@ import SidebarToggle from '@/components/SidebarToggle'
 import SidebarDesktop from '@/components/SidebarDesktop'
 interface RootLayoutProps {
   children: React.ReactNode
+}
+
+const title = 'GitHub Assistant'
+const description =
+  'An experimental chatbot app that provides easier GitHub search through generative UI elements.'
+
+export const metadata: Metadata = {
+  metadataBase: new URL('https://githubassistant.vercel.app/'),
+  title,
+  description,
+  openGraph: {
+    title,
+    description,
+  },
+  twitter: {
+    title,
+    description,
+    card: 'summary_large_image',
+    creator: '@kayaayberkk',
+  },
 }
 
 export const viewport: Viewport = {
