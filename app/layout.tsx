@@ -6,6 +6,10 @@ import { Toaster } from '@/components/ui/toaster'
 import { ClerkProvider, auth } from '@clerk/nextjs'
 import { Analytics } from '@vercel/analytics/react'
 import { checkRateLimit } from '@/lib/chat/github/github'
+import SidebarMobile from '@/components/SidebarMobile'
+import { ChatHistory } from '@/components/ChatHistory'
+import SidebarToggle from '@/components/SidebarToggle'
+import SidebarDesktop from '@/components/SidebarDesktop'
 interface RootLayoutProps {
   children: React.ReactNode
 }
@@ -43,6 +47,15 @@ export default async function RootLayout({ children }: RootLayoutProps) {
                 </p>
                 <Navigation />
               </header>
+            )}
+            {userId && (
+              <>
+                <SidebarMobile>
+                  <ChatHistory />
+                </SidebarMobile>
+                <SidebarToggle />
+                <SidebarDesktop />
+              </>
             )}
             {children}
             <Analytics />
