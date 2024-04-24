@@ -1,11 +1,10 @@
 import './globals.css'
-import Link from 'next/link'
 import { Viewport } from 'next'
 import { Providers } from './providers'
-import { ClerkProvider, auth } from '@clerk/nextjs'
-import { Toaster } from '@/components/ui/toaster'
-import { SignIn } from '@phosphor-icons/react/dist/ssr'
 import Navigation from '@/components/Navigation'
+import { Toaster } from '@/components/ui/toaster'
+import { ClerkProvider, auth } from '@clerk/nextjs'
+import { checkRateLimit } from '@/lib/chat/github/github'
 interface RootLayoutProps {
   children: React.ReactNode
 }
@@ -17,7 +16,13 @@ export const viewport: Viewport = {
   maximumScale: 1,
 }
 
-export default function RootLayout({ children }: RootLayoutProps) {
+const fetchedData = async () => {
+  const rateLimitRemaining = await checkRateLimit()
+  return rateLimitRemaining
+}
+
+export default async function RootLayout({ children }: RootLayoutProps) {
+  const rateLimitRemaining = await fetchedData()
   const { userId } = auth()
   return (
     <ClerkProvider>
@@ -30,7 +35,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
             disableTransitionOnChange
           >
             {!userId && (
-              <header className='fixed top-0 right-0 z-10 p-4 flex justify-end'>
+              <header className='fixed top-0 right-0 z-10 p-4 flex justify-between w-full items-center'>
+                <p className='text-xs font-medium'>
+                  <span>Rate limit remaining: </span>
+                  <span>{rateLimitRemaining}</span>
+                </p>
                 <Navigation />
               </header>
             )}
