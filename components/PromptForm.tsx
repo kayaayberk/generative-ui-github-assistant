@@ -3,9 +3,10 @@
 import {
   User,
   Code,
-  Users,
   Sparkle,
+  BookBookmark,
   ArrowElbowDownLeft,
+  Plus,
 } from '@phosphor-icons/react'
 import {
   DropdownMenu,
@@ -18,14 +19,15 @@ import {
 } from '@/components/ui/dropdown-menu'
 import * as React from 'react'
 import { nanoid } from 'nanoid'
-import { Input } from './ui/input'
 import { Button } from './ui/button'
 import { AI } from '@/lib/chat/actions'
-import { AttributeTypes } from '@/lib/types'
-import { useAIState, useActions, useUIState } from 'ai/rsc'
-import { UserMessage } from './assistant/Message'
 import { Textarea } from './ui/textarea'
+import { AttributeTypes } from '@/lib/types'
+import { UserMessage } from './assistant/Message'
+import { useAIState, useActions, useUIState } from 'ai/rsc'
 import { useEnterSubmit } from '@/lib/hooks/use-enter-submit'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 
 const ChatFilters = [
   {
@@ -33,24 +35,28 @@ const ChatFilters = [
     value: 'general',
     role: 'assistant',
     icon: <Sparkle />,
+    status: 'active',
   },
   {
     name: 'User Search',
     value: 'user-search',
     role: 'function',
     icon: <User />,
+    status: 'active',
   },
   {
     name: 'Repository Search',
     value: 'repository-search',
     role: 'function',
-    icon: <Users />,
+    icon: <BookBookmark />,
+    status: 'active',
   },
   {
     name: 'Code Search',
     value: 'code-search',
     role: 'function',
     icon: <Code />,
+    status: 'disabled',
   },
 ]
 
@@ -69,6 +75,7 @@ export function PromptForm({
   const id = React.useId()
   const { formRef, onKeyDown } = useEnterSubmit()
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
+  const pathname = usePathname()
 
   // Set the initial attribute to general
   const message = {
@@ -145,7 +152,7 @@ export function PromptForm({
         const responseMessage = await submitUserMessage(value)
         setMessages((currentMessages) => [...currentMessages, responseMessage])
       }}
-      className='w-full max-w-2xl mx-auto'
+      className='w-full max-w-2xl mx-auto flex items-center'
     >
       <div className='relative bottom-0 border w-full p-1 bg-background rounded-md shadow-xl mx-auto'>
         <DropdownMenu>
@@ -169,6 +176,7 @@ export function PromptForm({
                 return (
                   <DropdownMenuRadioItem
                     key={attribute.value}
+                    disabled={attribute.status === 'disabled'}
                     value={attribute.value}
                     className='flex items-center gap-1'
                     onSelect={() => onAttributeChange(attribute.value)}
@@ -207,6 +215,11 @@ export function PromptForm({
           <ArrowElbowDownLeft />
         </Button>
       </div>
+      {pathname === '/' && (
+        <Button onClick={() => window.location.reload()} size='icon'>
+          <Plus />
+        </Button>
+      )}
     </form>
   )
 }

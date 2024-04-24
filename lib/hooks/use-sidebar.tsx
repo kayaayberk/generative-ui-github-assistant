@@ -11,7 +11,7 @@ interface SidebarContext {
 }
 
 const SidebarContext = React.createContext<SidebarContext | undefined>(
-  undefined
+  undefined,
 )
 
 export function useSidebar() {
@@ -39,7 +39,7 @@ export function SidebarProvider({ children }: SidebarProviderProps) {
   }, [])
 
   const toggleSidebar = () => {
-    setSidebarOpen(value => {
+    setSidebarOpen((value) => {
       const newState = !value
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newState))
       return newState
