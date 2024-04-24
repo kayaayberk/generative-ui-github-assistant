@@ -4,6 +4,7 @@ import { Providers } from './providers'
 import Navigation from '@/components/Navigation'
 import { Toaster } from '@/components/ui/toaster'
 import { ClerkProvider, auth } from '@clerk/nextjs'
+import { Analytics } from '@vercel/analytics/react'
 import { checkRateLimit } from '@/lib/chat/github/github'
 interface RootLayoutProps {
   children: React.ReactNode
@@ -44,6 +45,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
               </header>
             )}
             {children}
+            <Analytics />
             <Toaster />
           </Providers>
         </body>
