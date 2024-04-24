@@ -62,19 +62,14 @@ export const getGithubProfile = async (username: string) => {
     accessToken = await getGithubAccessToken(userId)
   }
   const headers = createHeaders(accessToken)
-  console.log('headers:', headers)
-  console.log('accessToken:', accessToken)
-  try {
-    const res = await fetch(`https://api.github.com/users/${username}`, {
-      method: 'GET',
-      headers,
-    })
 
-    const githubUserData: GithubUser = await res.json()
-    return githubUserData as GithubUser
-  } catch (error) {
-    console.error('error from profile fetch:', error)
-  }
+  const res = await fetch(`https://api.github.com/users/${username}`, {
+    method: 'GET',
+    headers,
+  })
+
+  const githubUserData: GithubUser = await res.json()
+  return githubUserData as GithubUser
 }
 
 /**
