@@ -45,11 +45,6 @@ export async function submitUserMessage(content: string, attribute: string) {
         role: 'user',
         content,
       },
-      // {
-      //   id: nanoid(),
-      //   role: 'system',
-      //   content: `[User has changed attribute to ${attribute}]`,
-      // },
     ],
   })
 
@@ -130,7 +125,13 @@ export async function submitUserMessage(content: string, attribute: string) {
               {rateLimitRemaining === 0 ? (
                 <RateLimited />
               ) : (
-                <Profile props={profile} />
+                <>
+                  <Profile props={profile} />
+                  <p className='text-xs text-center text-zinc-600 space-x-1 font-light mt-2'>
+                    <span>Searched by AI, found:</span>
+                    <span className='font-medium'>{username}</span>
+                  </p>
+                </>
               )}
             </BotCard>
           )
@@ -161,24 +162,18 @@ export async function submitUserMessage(content: string, attribute: string) {
               },
             ],
           })
-          // aiState.update({
-          //   ...aiState.get(),
-          //   messages: [
-          //     ...aiState.get().messages,
-          //     {
-          //       id: nanoid(),
-          //       role: 'system' as const,
-          //       content: `[Found ${profiles.length} users with the usernames of '${profiles[0]?.login}', '${profiles[1]?.login}', '${profiles[2]?.login}', '${profiles[3]?.login}']`,
-          //     },
-          //   ],
-          // })
-
           return (
             <BotCard>
               {rateLimitRemaining === 0 ? (
                 <RateLimited />
               ) : (
-                <ProfileList props={profiles} />
+                <>
+                  <ProfileList props={profiles} />
+                  <p className='text-xs text-center text-zinc-600 space-x-1 font-light mt-2'>
+                    <span>Query constructed by AI:</span>
+                    <span className='font-medium'>users?q={query}</span>
+                  </p>
+                </>
               )}
             </BotCard>
           )
@@ -216,7 +211,13 @@ export async function submitUserMessage(content: string, attribute: string) {
               {rateLimitRemaining === 0 ? (
                 <RateLimited />
               ) : (
-                <Repositories props={repositories} />
+                <>
+                  <Repositories props={repositories} />
+                  <p className='text-xs text-center text-zinc-600 space-x-1 font-light mt-2'>
+                    <span>Query constructed by AI:</span>
+                    <span className='font-medium'>repositories?q={query}</span>
+                  </p>
+                </>
               )}
             </BotCard>
           )
@@ -255,7 +256,15 @@ export async function submitUserMessage(content: string, attribute: string) {
               {rateLimitRemaining === 0 ? (
                 <RateLimited />
               ) : (
-                <Readme props={response.content} />
+                <>
+                  <Readme props={response.content} />
+                  <p className='text-xs text-center text-zinc-600 space-x-1 font-light mt-2'>
+                    <span>Query constructed by AI:</span>
+                    <span className='font-medium'>
+                      repos/{owner}/{repo}/contents/README.md
+                    </span>
+                  </p>
+                </>
               )}
             </BotCard>
           )
@@ -294,7 +303,15 @@ export async function submitUserMessage(content: string, attribute: string) {
               {rateLimitRemaining === 0 ? (
                 <RateLimited />
               ) : (
-                <Directory props={response} />
+                <>
+                  <Directory props={response} />
+                  <p className='text-xs text-center text-zinc-600 space-x-1 font-light mt-2'>
+                    <span>Query constructed by AI:</span>
+                    <span className='font-medium'>
+                      repos/{owner}/{repo}/contents/
+                    </span>
+                  </p>
+                </>
               )}
             </BotCard>
           )

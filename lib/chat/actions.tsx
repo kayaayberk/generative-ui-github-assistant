@@ -97,7 +97,7 @@ export const AI = createAI<AIState, UIState>({
 
 // Parses the previously rendered content and returns the UI state.
 // (Useful for chat history to rerender the UI components again when switching between the chats)
-export const getUIStateFromAIState = (aiState: Chat) => {
+export const getUIStateFromAIState = async (aiState: Chat) => {
   return aiState.messages
     .filter((message) => message.role !== 'system')
     .map((m, index) => ({
@@ -106,23 +106,43 @@ export const getUIStateFromAIState = (aiState: Chat) => {
         m.role === 'function' ? (
           m.name === 'show_user_profile_ui' ? (
             <BotCard>
-              <Profile props={JSON.parse(m.content)} />
+              {m.content ? (
+                <Profile props={JSON.parse(m.content)} />
+              ) : (
+                'Something went wrong parsing this component!'
+              )}
             </BotCard>
           ) : m.name === 'show_user_list_ui' ? (
             <BotCard>
-              <ProfileList props={JSON.parse(m.content)} />
+              {m.content ? (
+                <ProfileList props={JSON.parse(m.content)} />
+              ) : (
+                'Something went wrong parsing this component!'
+              )}
             </BotCard>
           ) : m.name === 'show_repository_ui' ? (
             <BotCard>
-              <Repositories props={JSON.parse(m.content)} />
+              {m.content ? (
+                <Repositories props={JSON.parse(m.content)} />
+              ) : (
+                'Something went wrong!'
+              )}
             </BotCard>
           ) : m.name === 'show_readme_ui' ? (
             <BotCard>
-              <Readme props={JSON.parse(m.content)} />
+              {m.content ? (
+                <Readme props={JSON.parse(m.content)} />
+              ) : (
+                'Something went wrong parsing this component!'
+              )}
             </BotCard>
           ) : m.name === 'show_directory_ui' ? (
             <BotCard>
-              <Directory props={JSON.parse(m.content)} />
+              {m.content ? (
+                <Directory props={JSON.parse(m.content)} />
+              ) : (
+                'Something went wrong parsing this component!'
+              )}
             </BotCard>
           ) : null
         ) : m.role === 'user' ? (

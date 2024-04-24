@@ -1,22 +1,22 @@
 import 'server-only'
-import { AI } from './actions'
-import { nanoid } from 'nanoid'
-import { runAsyncFnWithoutBlocking } from '../utils'
 import {
-  checkRateLimit,
   getDir,
   getReadme,
+  checkRateLimit,
   searchRespositories,
 } from './github/github'
+import { AI } from './actions'
+import { nanoid } from 'nanoid'
+import { Readme as RM } from '../types'
+import RateLimited from '@/components/RateLimited'
+import { runAsyncFnWithoutBlocking } from '../utils'
+import { Readme } from '@/components/assistant/Readme'
 import { BotCard } from '@/components/assistant/Message'
+import { Spinner } from '@/components/assistant/Spinner'
+import Directory from '@/components/assistant/Directory'
 import Repositories from '@/components/assistant/Repositories'
 import { createStreamableUI, getMutableAIState } from 'ai/rsc'
 import { ProfileSkeleton } from '@/components/assistant/ProfileSkeleton'
-import { Spinner } from '@/components/assistant/Spinner'
-import { Readme } from '@/components/assistant/Readme'
-import Directory from '@/components/assistant/Directory'
-import { Readme as RM } from '../types'
-import RateLimited from '@/components/RateLimited'
 
 export async function repoAction(username: string) {
   'use server'
@@ -51,7 +51,15 @@ export async function repoAction(username: string) {
         {rateLimitRemaining === 0 ? (
           <RateLimited />
         ) : (
-          <Repositories props={repositories} />
+          <>
+            <Repositories props={repositories} />
+            <p className='text-xs text-center text-zinc-600 space-x-1 font-light mt-2'>
+              <span>Query constructed by AI:</span>
+              <span className='font-medium'>
+                repositories?q=user:{username}
+              </span>
+            </p>
+          </>
         )}
       </BotCard>,
     )
@@ -113,7 +121,15 @@ export async function readmeAction(repo: string, owner: string) {
         {rateLimitRemaining === 0 ? (
           <RateLimited />
         ) : (
-          <Readme props={readme.content} />
+          <>
+            <Readme props={readme.content} />
+            <p className='text-xs text-center text-zinc-600 space-x-1 font-light mt-2'>
+              <span>Query constructed by AI:</span>
+              <span className='font-medium'>
+                repos/{owner}/{repo}/contents/README.md
+              </span>
+            </p>
+          </>
         )}
       </BotCard>,
     )
@@ -175,7 +191,15 @@ export async function dirAction(repo: string, owner: string) {
         {rateLimitRemaining === 0 ? (
           <RateLimited />
         ) : (
-          <Directory props={directory} />
+          <>
+            <Directory props={directory} />
+            <p className='text-xs text-center text-zinc-600 space-x-1 font-light mt-2'>
+              <span>Query constructed by AI:</span>
+              <span className='font-medium'>
+                repos/{owner}/{repo}/contents/
+              </span>
+            </p>
+          </>
         )}
       </BotCard>,
     )
