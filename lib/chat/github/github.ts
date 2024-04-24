@@ -59,18 +59,22 @@ export const getGithubProfile = async (username: string) => {
   const { userId } = auth()
   let accessToken
   if (userId) {
-    const accessToken = await getGithubAccessToken(userId)
+    accessToken = await getGithubAccessToken(userId)
   }
   const headers = createHeaders(accessToken)
+  console.log('headers:', headers)
+  console.log('accessToken:', accessToken)
+  try {
+    const res = await fetch(`https://api.github.com/users/${username}`, {
+      method: 'GET',
+      headers,
+    })
 
-  const res = await fetch(`https://api.github.com/users/${username}`, {
-    method: 'GET',
-    headers,
-  })
-  console.log('Remaining rate limit:', res.headers.get('x-ratelimit-remaining'))
-
-  const githubUserData: GithubUser = await res.json()
-  return githubUserData as GithubUser
+    const githubUserData: GithubUser = await res.json()
+    return githubUserData as GithubUser
+  } catch (error) {
+    console.error('error from profile fetch:', error)
+  }
 }
 
 /**
@@ -88,7 +92,7 @@ export const listUsers = async (query: string) => {
   const { userId } = auth()
   let accessToken
   if (userId) {
-    const accessToken = await getGithubAccessToken(userId)
+    accessToken = await getGithubAccessToken(userId)
   }
   const headers = createHeaders(accessToken)
 
@@ -142,7 +146,7 @@ export const searchRespositories = async (query: string) => {
   const { userId } = auth()
   let accessToken
   if (userId) {
-    const accessToken = await getGithubAccessToken(userId)
+    accessToken = await getGithubAccessToken(userId)
   }
   const headers = createHeaders(accessToken)
 
@@ -180,7 +184,7 @@ export const getReadme = async (
   const { userId } = auth()
   let accessToken
   if (userId) {
-    const accessToken = await getGithubAccessToken(userId)
+    accessToken = await getGithubAccessToken(userId)
   }
   const headers = createHeaders(accessToken)
 
@@ -210,7 +214,7 @@ export const getDir = async ({
   const { userId } = auth()
   let accessToken
   if (userId) {
-    const accessToken = await getGithubAccessToken(userId)
+    accessToken = await getGithubAccessToken(userId)
   }
   const headers = createHeaders(accessToken)
 
@@ -244,7 +248,7 @@ export const getDirContent = async (
 ): Promise<Directory[]> => {
   let accessToken
   if (userId) {
-    const accessToken = await getGithubAccessToken(userId)
+    accessToken = await getGithubAccessToken(userId)
   }
   const headers = createHeaders(accessToken)
 
@@ -273,7 +277,7 @@ export const decodeContent = async (
 ): Promise<string> => {
   let accessToken
   if (userId) {
-    const accessToken = await getGithubAccessToken(userId)
+    accessToken = await getGithubAccessToken(userId)
   }
   const headers = createHeaders(accessToken)
 
