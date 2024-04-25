@@ -71,6 +71,8 @@ export function PromptForm({
   const [aiState, setAIState] = useAIState<typeof AI>()
   const { submitUserMessage } = useActions()
   const [attribute, setAttribute] = React.useState('general')
+  const [newAttribute, setNewAttribute] = React.useState(null)
+
   // Unique identifier for this UI component.
   const id = React.useId()
   const { formRef, onKeyDown } = useEnterSubmit()
@@ -93,13 +95,15 @@ export function PromptForm({
   // so LLM also knows what's going on.
   function onAttributeChange(e: any) {
     const newValue = e
+    setNewAttribute(newValue)
+  }
+  React.useEffect(() => {
+    if (newAttribute === null) return // if newAttribute is null, don't run the effect
 
     // Insert a hidden history info to the list.
     const message = {
       role: 'system' as const,
-      content: `[User has changed the attribute to ${newValue}]`,
-
-      // Identifier of this UI component, so we don't insert it many times.
+      content: `[User has changed the attribute to ${newAttribute}]`,
       id,
     }
 
@@ -110,12 +114,12 @@ export function PromptForm({
         ...aiState,
         messages: [...aiState.messages.slice(0, -1), message],
       })
-
       return
     }
+
     // If it doesn't exist, append it to history.
     setAIState({ ...aiState, messages: [...aiState.messages, message] })
-  }
+  }, [newAttribute])
 
   React.useEffect(() => {
     if (inputRef.current) {

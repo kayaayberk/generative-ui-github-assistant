@@ -35,21 +35,24 @@ function Chat({ id, missingKeys }: ChatProps) {
 
   const [_, setNewChatId] = useLocalStorage('newChatId', id)
   const { isSidebarOpen, isLoading, toggleSidebar } = useSidebar()
+  console.log('AI', aiState)
+  console.log('UI', messages)
 
   useEffect(() => {
     if (isSignedIn) {
-      if (!pathname.includes(id) && messages.length === 2) {
+      if (!pathname.includes(`/chat/${id}`) && messages.length === 1) {
         window.history.replaceState({}, '', `/chat/${id}`)
       }
     }
-  }, [id, pathname, user, messages])
+  }, [id, pathname, user, messages, isSignedIn])
 
   useEffect(() => {
     const messagesLength = aiState.messages?.length
     if (messagesLength === 3) {
-      sleep(300).then(() => {
+      sleep(800).finally(() => {
         router.refresh()
       })
+      console.log('refreshed')
     }
   }, [aiState.messages, router])
 
