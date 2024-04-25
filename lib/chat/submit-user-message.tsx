@@ -122,11 +122,7 @@ export async function submitUserMessage(content: string, attribute: string) {
 
           return (
             <BotCard>
-              {rateLimitRemaining !== 0 ? (
-                <Profile props={profile} />
-              ) : (
-                <RateLimited />
-              )}
+              <Profile props={profile} />
             </BotCard>
           )
         },

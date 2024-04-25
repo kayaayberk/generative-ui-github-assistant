@@ -106,43 +106,23 @@ export const getUIStateFromAIState = async (aiState: Chat) => {
         m.role === 'function' ? (
           m.name === 'show_user_profile_ui' ? (
             <BotCard>
-              {m.content ? (
-                <Profile props={JSON.parse(m.content)} />
-              ) : (
-                'Something went wrong parsing this component!'
-              )}
+              <Profile props={JSON.parse(m.content)} />
             </BotCard>
           ) : m.name === 'show_user_list_ui' ? (
             <BotCard>
-              {m.content ? (
-                <ProfileList props={JSON.parse(m.content)} />
-              ) : (
-                'Something went wrong parsing this component!'
-              )}
+              <ProfileList props={JSON.parse(m.content)} />
             </BotCard>
           ) : m.name === 'show_repository_ui' ? (
             <BotCard>
-              {m.content ? (
-                <Repositories props={JSON.parse(m.content)} />
-              ) : (
-                'Something went wrong!'
-              )}
+              <Repositories props={JSON.parse(m.content)} />
             </BotCard>
           ) : m.name === 'show_readme_ui' ? (
             <BotCard>
-              {m.content ? (
-                <Readme props={JSON.parse(m.content)} />
-              ) : (
-                'Something went wrong parsing this component!'
-              )}
+              <Readme props={JSON.parse(m.content)} />
             </BotCard>
           ) : m.name === 'show_directory_ui' ? (
             <BotCard>
-              {m.content ? (
-                <Directory props={JSON.parse(m.content)} />
-              ) : (
-                'Something went wrong parsing this component!'
-              )}
+              <Directory props={JSON.parse(m.content)} />
             </BotCard>
           ) : null
         ) : m.role === 'user' ? (
