@@ -31,7 +31,6 @@ export default async function ChatPage({ params }: ChatPageProps) {
     <AI initialAIState={{ chatId: chat[0].id, messages: chat[0].messages }}>
       <Chat
         id={chat[0].id}
-        initialMessages={chat[0].messages}
         missingKeys={missingKeys}
       />
     </AI>
