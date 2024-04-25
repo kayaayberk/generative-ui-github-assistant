@@ -44,6 +44,12 @@ Github Assistant is a chatbot that utilises GPT and Vercel AI SDK to generate UI
 You can also interact with these actions within the AI stream through presented UI components. Each component includes related actions.
 </p>
 
+### Actions & Function calling
+Actions and functions related to generative UI elements as well as the AI provider can be found in:
+- `/lib/chat/actions.tsx`
+- `/lib/chat/submit-user-action.tsx` 
+- `/lib/chat/submit-user-message.tsx`
+
 ## ⚙️ Run on your local
 
 #### 1. Clone the repository
