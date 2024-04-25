@@ -156,6 +156,23 @@ export const getGithubAccessToken = async (userId: string) => {
   return accessToken as string
 }
 
-// export const getAttributes = async ()=> {
+export const clearAllChats = async (userId: string) => {
+  const user = await currentUser()
+  if (!user || !userId) {
+    return {
+      error: 'Unauthorized',
+    }
+  }
 
-// }
+  if (user) {
+    const allChats: Chat[] = await db
+      .select()
+      .from(chat)
+      .where(eq(chat.author, user.id))
+
+    if (allChats.length) {
+      await db.delete(chat).where(eq(chat.author, userId))
+    }
+    return revalidatePath(allChats.map((chat) => chat.path).join(', ')) // Fix: Pass a single string instead of an array of strings
+  }
+}

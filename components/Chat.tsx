@@ -47,7 +47,7 @@ function Chat({ id, missingKeys }: ChatProps) {
   useEffect(() => {
     const messagesLength = aiState.messages?.length
     if (messagesLength >= 3) {
-      sleep(1000).then(() => {
+      sleep(1500).then(() => {
         router.refresh()
       })
     }

@@ -7,9 +7,13 @@ import ThemeToggle from './ThemeToggle'
 import { currentUser } from '@clerk/nextjs'
 import { InsertUser, user } from '@/db/schema'
 import { Plus } from '@phosphor-icons/react/dist/ssr'
+import ClearAllChats from './ClearAllChats'
 
 export async function ChatHistory() {
   const loggedInUser = await currentUser()
+  if (!loggedInUser) {
+    return null
+  }
 
   if (loggedInUser) {
     const existingUser = await db
@@ -50,6 +54,7 @@ export async function ChatHistory() {
       </div>
 
       <div className='flex flex-col gap-2'>
+        <ClearAllChats userId={loggedInUser.id} />
         <ThemeToggle />
         <UserBadge />
       </div>

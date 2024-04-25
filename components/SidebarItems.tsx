@@ -15,6 +15,10 @@ function SidebarItems({ chats }: SidebarItemsProps) {
   return (
     <div className='w-full flex flex-col gap-1 '>
       {chats
+        .sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+        )
         .map(
           (chat, index) =>
             chat && (
