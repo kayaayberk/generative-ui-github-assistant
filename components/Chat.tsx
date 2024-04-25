@@ -35,8 +35,6 @@ function Chat({ id, missingKeys }: ChatProps) {
 
   const [_, setNewChatId] = useLocalStorage('newChatId', id)
   const { isSidebarOpen, isLoading, toggleSidebar } = useSidebar()
-  console.log('AI', aiState)
-  console.log('UI', messages)
 
   useEffect(() => {
     if (isSignedIn) {
@@ -52,7 +50,6 @@ function Chat({ id, missingKeys }: ChatProps) {
       sleep(800).finally(() => {
         router.refresh()
       })
-      console.log('refreshed')
     }
   }, [aiState.messages, router])
 
