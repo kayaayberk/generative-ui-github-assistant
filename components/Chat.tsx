@@ -38,7 +38,7 @@ function Chat({ id, missingKeys }: ChatProps) {
 
   useEffect(() => {
     if (isSignedIn) {
-      if (!pathname.includes(id) && messages.length >= 1) {
+      if (!pathname.includes(id) && messages.length === 2) {
         window.history.replaceState({}, '', `/chat/${id}`)
       }
     }
@@ -46,8 +46,8 @@ function Chat({ id, missingKeys }: ChatProps) {
 
   useEffect(() => {
     const messagesLength = aiState.messages?.length
-    if (messagesLength >= 3) {
-      sleep(1500).then(() => {
+    if (messagesLength === 3) {
+      sleep(300).then(() => {
         router.refresh()
       })
     }
@@ -74,11 +74,12 @@ function Chat({ id, missingKeys }: ChatProps) {
   }, [messages, ref?.current?.scrollHeight])
 
   return (
-    <div
-      className={`size-full`}
-    >
+    <div className={`size-full`}>
       <ScrollArea className='size-full'>
-        <div ref={ref} className={`w-full sm:max-w-2xl mx-auto sm:pt-0 pt-14 pb-36 sm:pb-28 ${isSidebarOpen && isSignedIn ? 'lg:translate-x-[100px]' : ''} transition-all duration-300 ${messages.length !== 0 && 'px-3'}`}>
+        <div
+          ref={ref}
+          className={`w-full sm:max-w-2xl mx-auto sm:pt-0 pt-14 pb-36 sm:pb-28 ${isSidebarOpen && isSignedIn ? 'lg:translate-x-[100px]' : ''} transition-all duration-300 ${messages.length !== 0 && 'px-3'}`}
+        >
           <ChatMessage messages={messages} />
         </div>
         <ChatPanel />

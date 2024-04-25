@@ -48,18 +48,10 @@ export async function repoAction(username: string) {
 
     systemMessage.done(
       <BotCard>
-        {rateLimitRemaining === 0 ? (
-          <RateLimited />
+        {rateLimitRemaining !== 0 ? (
+          <Repositories props={repositories} />
         ) : (
-          <>
-            <Repositories props={repositories} />
-            <p className='text-xs text-center text-zinc-600 space-x-1 font-light mt-2'>
-              <span>Query constructed by AI:</span>
-              <span className='font-medium'>
-                repositories?q=user:{username}
-              </span>
-            </p>
-          </>
+          <RateLimited />
         )}
       </BotCard>,
     )
@@ -118,18 +110,10 @@ export async function readmeAction(repo: string, owner: string) {
 
     systemMessage.done(
       <BotCard>
-        {rateLimitRemaining === 0 ? (
-          <RateLimited />
+        {rateLimitRemaining !== 0 ? (
+          <Readme props={readme.content} />
         ) : (
-          <>
-            <Readme props={readme.content} />
-            <p className='text-xs text-center text-zinc-600 space-x-1 font-light mt-2'>
-              <span>Query constructed by AI:</span>
-              <span className='font-medium'>
-                repos/{owner}/{repo}/contents/README.md
-              </span>
-            </p>
-          </>
+          <RateLimited />
         )}
       </BotCard>,
     )
@@ -188,18 +172,10 @@ export async function dirAction(repo: string, owner: string) {
 
     systemMessage.done(
       <BotCard>
-        {rateLimitRemaining === 0 ? (
-          <RateLimited />
+        {rateLimitRemaining !== 0 ? (
+          <Directory props={directory} />
         ) : (
-          <>
-            <Directory props={directory} />
-            <p className='text-xs text-center text-zinc-600 space-x-1 font-light mt-2'>
-              <span>Query constructed by AI:</span>
-              <span className='font-medium'>
-                repos/{owner}/{repo}/contents/
-              </span>
-            </p>
-          </>
+          <RateLimited />
         )}
       </BotCard>,
     )

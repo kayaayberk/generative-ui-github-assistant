@@ -122,16 +122,10 @@ export async function submitUserMessage(content: string, attribute: string) {
 
           return (
             <BotCard>
-              {rateLimitRemaining === 0 ? (
-                <RateLimited />
+              {rateLimitRemaining !== 0 ? (
+                <Profile props={profile} />
               ) : (
-                <>
-                  <Profile props={profile} />
-                  <p className='text-xs text-center text-zinc-600 space-x-1 font-light mt-2'>
-                    <span>Searched by AI, found:</span>
-                    <span className='font-medium'>{username}</span>
-                  </p>
-                </>
+                <RateLimited />
               )}
             </BotCard>
           )
@@ -164,16 +158,10 @@ export async function submitUserMessage(content: string, attribute: string) {
           })
           return (
             <BotCard>
-              {rateLimitRemaining === 0 ? (
-                <RateLimited />
+              {rateLimitRemaining !== 0 ? (
+                <ProfileList props={profiles} />
               ) : (
-                <>
-                  <ProfileList props={profiles} />
-                  <p className='text-xs text-center text-zinc-600 space-x-1 font-light mt-2'>
-                    <span>Query constructed by AI:</span>
-                    <span className='font-medium'>users?q={query}</span>
-                  </p>
-                </>
+                <RateLimited />
               )}
             </BotCard>
           )
@@ -208,16 +196,10 @@ export async function submitUserMessage(content: string, attribute: string) {
 
           return (
             <BotCard>
-              {rateLimitRemaining === 0 ? (
-                <RateLimited />
+              {rateLimitRemaining !== 0 ? (
+                <Repositories props={repositories} />
               ) : (
-                <>
-                  <Repositories props={repositories} />
-                  <p className='text-xs text-center text-zinc-600 space-x-1 font-light mt-2'>
-                    <span>Query constructed by AI:</span>
-                    <span className='font-medium'>repositories?q={query}</span>
-                  </p>
-                </>
+                <RateLimited />
               )}
             </BotCard>
           )
@@ -253,18 +235,10 @@ export async function submitUserMessage(content: string, attribute: string) {
 
           return (
             <BotCard>
-              {rateLimitRemaining === 0 ? (
-                <RateLimited />
+              {rateLimitRemaining !== 0 ? (
+                <Readme props={response.content} />
               ) : (
-                <>
-                  <Readme props={response.content} />
-                  <p className='text-xs text-center text-zinc-600 space-x-1 font-light mt-2'>
-                    <span>Query constructed by AI:</span>
-                    <span className='font-medium'>
-                      repos/{owner}/{repo}/contents/README.md
-                    </span>
-                  </p>
-                </>
+                <RateLimited />
               )}
             </BotCard>
           )
@@ -300,18 +274,10 @@ export async function submitUserMessage(content: string, attribute: string) {
 
           return (
             <BotCard>
-              {rateLimitRemaining === 0 ? (
-                <RateLimited />
+              {rateLimitRemaining !== 0 ? (
+                <Directory props={response} />
               ) : (
-                <>
-                  <Directory props={response} />
-                  <p className='text-xs text-center text-zinc-600 space-x-1 font-light mt-2'>
-                    <span>Query constructed by AI:</span>
-                    <span className='font-medium'>
-                      repos/{owner}/{repo}/contents/
-                    </span>
-                  </p>
-                </>
+                <RateLimited />
               )}
             </BotCard>
           )
