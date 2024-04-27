@@ -52,7 +52,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
   return (
     <ClerkProvider>
       <html lang='en' suppressHydrationWarning>
-        <body className='w-full h-screen overflow-hidden'>
+        <body className='w-full h-screen overflow-hidden' suppressHydrationWarning>
           <Providers
             enableSystem
             attribute='class'

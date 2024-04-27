@@ -9,7 +9,7 @@ import { AI } from './actions'
 import { nanoid } from 'nanoid'
 import { Readme as RM } from '../types'
 import RateLimited from '@/components/RateLimited'
-import { runAsyncFnWithoutBlocking } from '../utils'
+import { runAsyncFnWithoutBlocking, sleep } from '../utils'
 import { Readme } from '@/components/assistant/Readme'
 import { BotCard } from '@/components/assistant/Message'
 import { Spinner } from '@/components/assistant/Spinner'
@@ -45,6 +45,7 @@ export async function repoAction(username: string) {
         <ProfileSkeleton />
       </BotCard>,
     )
+    sleep(1000)
 
     systemMessage.done(
       <BotCard>
@@ -107,7 +108,7 @@ export async function readmeAction(repo: string, owner: string) {
         <ProfileSkeleton />
       </BotCard>,
     )
-
+    sleep(1000)
     systemMessage.done(
       <BotCard>
         {rateLimitRemaining !== 0 ? (
@@ -169,7 +170,7 @@ export async function dirAction(repo: string, owner: string) {
         <ProfileSkeleton />
       </BotCard>,
     )
-
+    sleep(1000)
     systemMessage.done(
       <BotCard>
         {rateLimitRemaining !== 0 ? (

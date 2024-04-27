@@ -26,6 +26,7 @@ import { createStreamableValue, getMutableAIState, render } from 'ai/rsc'
 import Directory from '@/components/assistant/Directory'
 import { Readme } from '@/components/assistant/Readme'
 import RateLimited from '@/components/RateLimited'
+import { sleep } from '../utils'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || '',
@@ -106,6 +107,7 @@ export async function submitUserMessage(content: string, attribute: string) {
           )
           const rateLimitRemaining = await checkRateLimit()
           const profile = await getGithubProfile(username)
+          sleep(1000)
 
           aiState.done({
             ...aiState.get(),
@@ -122,7 +124,11 @@ export async function submitUserMessage(content: string, attribute: string) {
 
           return (
             <BotCard>
-              <Profile props={profile} />
+              {rateLimitRemaining !== 0 ? (
+                <Profile props={profile} />
+              ) : (
+                <RateLimited />
+              )}
             </BotCard>
           )
         },
@@ -140,6 +146,7 @@ export async function submitUserMessage(content: string, attribute: string) {
           )
           const rateLimitRemaining = await checkRateLimit()
           const profiles = await convertUserType(query)
+          sleep(1000)
           aiState.done({
             ...aiState.get(),
             messages: [
@@ -176,6 +183,7 @@ export async function submitUserMessage(content: string, attribute: string) {
           )
           const rateLimitRemaining = await checkRateLimit()
           const repositories = await searchRespositories(query)
+          sleep(1000)
 
           aiState.done({
             ...aiState.get(),
@@ -215,6 +223,7 @@ export async function submitUserMessage(content: string, attribute: string) {
           )
           const rateLimitRemaining = await checkRateLimit()
           const response = await getReadme(repo, owner)
+          sleep(1000)
 
           aiState.done({
             ...aiState.get(),
@@ -254,6 +263,7 @@ export async function submitUserMessage(content: string, attribute: string) {
           )
           const rateLimitRemaining = await checkRateLimit()
           const response = await getDir({ repo, owner })
+          sleep(1000)
 
           aiState.done({
             ...aiState.get(),

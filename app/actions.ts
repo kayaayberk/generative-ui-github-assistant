@@ -173,6 +173,6 @@ export const clearAllChats = async (userId: string) => {
     if (allChats.length) {
       await db.delete(chat).where(eq(chat.author, userId))
     }
-    return revalidatePath(allChats.map((chat) => chat.path).join(', ')) // Fix: Pass a single string instead of an array of strings
+    return revalidatePath(allChats.map((chat) => chat.path).join(', '))
   }
 }

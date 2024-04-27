@@ -95,15 +95,13 @@ export function PromptForm({
   // so LLM also knows what's going on.
   function onAttributeChange(e: any) {
     const newValue = e
-    setNewAttribute(newValue)
-  }
-  React.useEffect(() => {
+
     if (newAttribute === null) return // if newAttribute is null, don't run the effect
 
     // Insert a hidden history info to the list.
     const message = {
       role: 'system' as const,
-      content: `[User has changed the attribute to ${newAttribute}]`,
+      content: `[User has changed the attribute to ${newValue}]`,
       id,
     }
 
@@ -119,7 +117,7 @@ export function PromptForm({
 
     // If it doesn't exist, append it to history.
     setAIState({ ...aiState, messages: [...aiState.messages, message] })
-  }, [newAttribute])
+  }
 
   React.useEffect(() => {
     if (inputRef.current) {

@@ -38,16 +38,17 @@ function Chat({ id, missingKeys }: ChatProps) {
 
   useEffect(() => {
     if (isSignedIn) {
-      if (!pathname.includes(`/chat/${id}`) && messages.length === 1) {
+      if (!pathname.includes(id) && messages.length === 1) {
         window.history.replaceState({}, '', `/chat/${id}`)
       }
     }
-  }, [id, pathname, user, messages, isSignedIn])
+  }, [pathname, isSignedIn, messages])
 
   useEffect(() => {
     const messagesLength = aiState.messages?.length
     if (messagesLength === 3) {
-      sleep(800).finally(() => {
+      sleep(500).then(() => {
+        ref.current?.scrollTo(0, ref.current.scrollHeight)
         router.refresh()
       })
     }
@@ -55,7 +56,7 @@ function Chat({ id, missingKeys }: ChatProps) {
 
   useEffect(() => {
     setNewChatId(id)
-  })
+  }, [])
 
   useEffect(() => {
     missingKeys.map((key) => {
@@ -66,12 +67,6 @@ function Chat({ id, missingKeys }: ChatProps) {
       })
     })
   }, [missingKeys])
-
-  // Scroll as the stream comes in
-  useEffect(() => {
-    if (ref.current === null) return
-    ref.current.scrollTo(0, ref.current.scrollHeight)
-  }, [messages, ref?.current?.scrollHeight])
 
   return (
     <div className={`size-full`}>

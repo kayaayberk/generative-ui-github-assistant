@@ -9,14 +9,14 @@ import { Chat } from '../types'
 import { saveChat } from '@/app/actions'
 import { currentUser } from '@clerk/nextjs'
 import { createAI, getAIState } from 'ai/rsc'
-import { dirAction, readmeAction, repoAction } from './submit-user-action'
+import { Readme } from '@/components/assistant/Readme'
+import Directory from '@/components/assistant/Directory'
 import { Profile } from '@/components/assistant/Profile'
 import { submitUserMessage } from './submit-user-message'
 import { nanoid, runAsyncFnWithoutBlocking } from '../utils'
 import Repositories from '@/components/assistant/Repositories'
 import { ProfileList } from '@/components/assistant/ProfileList'
-import Directory from '@/components/assistant/Directory'
-import { Readme } from '@/components/assistant/Readme'
+import { dirAction, readmeAction, repoAction } from './submit-user-action'
 
 export interface Message {
   role?: 'user' | 'assistant' | 'system' | 'function' | 'data' | 'tool'
@@ -128,7 +128,7 @@ export const getUIStateFromAIState = async (aiState: Chat) => {
         ) : m.role === 'user' ? (
           <UserMessage>{m.content}</UserMessage>
         ) : (
-          m.role === 'assistant' && <BotMessage content={m.content} />
+          <BotMessage content={m.content} />
         ),
     }))
 }
