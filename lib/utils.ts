@@ -12,11 +12,18 @@ export const nanoid = customAlphabet(
 )
 
 export const sleep = (ms: number) =>
-  new Promise(resolve => setTimeout(resolve, ms))
-
+  new Promise((resolve) => setTimeout(resolve, ms))
 
 export const runAsyncFnWithoutBlocking = (
-  fn: (...args: any) => Promise<any>
+  fn: (...args: any) => Promise<any>,
 ) => {
   fn()
+}
+
+export const getMediumFont = async () => {
+  const response = await fetch(
+    new URL('@/assets/fonts/LabilGrotesk-Medium.ttf', import.meta.url),
+  )
+  const font = await response.arrayBuffer()
+  return font
 }

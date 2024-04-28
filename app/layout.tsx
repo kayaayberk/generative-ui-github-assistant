@@ -10,21 +10,24 @@ import SidebarMobile from '@/components/SidebarMobile'
 import { ChatHistory } from '@/components/ChatHistory'
 import SidebarToggle from '@/components/SidebarToggle'
 import SidebarDesktop from '@/components/SidebarDesktop'
+import { sharedTitle } from './shared-metadata'
 interface RootLayoutProps {
   children: React.ReactNode
 }
 
 const title = 'GitHub Assistant'
 const description =
-  'An experimental chatbot app that provides easier GitHub search through generative UI elements.'
+  "An experimental AI Chatbot utilising generative UI, serving data from GitHub's API through interactive UI components."
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://githubassistant.vercel.app/'),
   title,
   description,
   openGraph: {
-    title,
-    description,
+    title: {
+      template: `%s — ${sharedTitle}`,
+      default: sharedTitle,
+    },
   },
   twitter: {
     title,
@@ -52,7 +55,10 @@ export default async function RootLayout({ children }: RootLayoutProps) {
   return (
     <ClerkProvider>
       <html lang='en' suppressHydrationWarning>
-        <body className='w-full h-screen overflow-hidden' suppressHydrationWarning>
+        <body
+          className='w-full h-screen overflow-hidden'
+          suppressHydrationWarning
+        >
           <Providers
             enableSystem
             attribute='class'
