@@ -10,9 +10,9 @@ import { ChatMessage } from './ChatMessage'
 import { ScrollArea } from './ui/scroll-area'
 import { useUIState, useAIState } from 'ai/rsc'
 import { useEffect, useRef, useState } from 'react'
+import { useSidebar } from '@/lib/hooks/use-sidebar'
 import { usePathname, useRouter } from 'next/navigation'
 import { useLocalStorage } from '@/lib/hooks/use-local-storage'
-import { useSidebar } from '@/lib/hooks/use-sidebar'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -22,7 +22,7 @@ export interface ChatProps extends React.ComponentProps<'div'> {
 
 function Chat({ id, missingKeys }: ChatProps) {
   const ref = useRef<HTMLDivElement>(null)
-  const { isSignedIn, user } = useUser()
+  const { isSignedIn } = useUser()
 
   const [input, setInput] = useState('')
   const [messages] = useUIState()
@@ -35,14 +35,6 @@ function Chat({ id, missingKeys }: ChatProps) {
 
   const [_, setNewChatId] = useLocalStorage('newChatId', id)
   const { isSidebarOpen, isLoading, toggleSidebar } = useSidebar()
-
-  useEffect(() => {
-    if (isSignedIn) {
-      if (!pathname.includes(id) && messages.length === 1) {
-        window.history.replaceState({}, '', `/chat/${id}`)
-      }
-    }
-  }, [pathname, isSignedIn, messages])
 
   useEffect(() => {
     const messagesLength = aiState.messages?.length
@@ -75,7 +67,7 @@ function Chat({ id, missingKeys }: ChatProps) {
           ref={ref}
           className={`w-full sm:max-w-2xl mx-auto sm:pt-0 pt-14 pb-36 sm:pb-28 ${isSidebarOpen && isSignedIn ? 'lg:translate-x-[100px]' : ''} transition-all duration-300 ${messages.length !== 0 && 'px-3'}`}
         >
-          <ChatMessage messages={messages} />
+          <ChatMessage id={id} messages={messages} />
         </div>
         <ChatPanel />
       </ScrollArea>

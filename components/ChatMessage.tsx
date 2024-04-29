@@ -1,12 +1,27 @@
 'use client'
 
+import { useEffect } from 'react'
+import { useUser } from '@clerk/nextjs'
 import { UIState } from '@/lib/chat/actions'
+import { usePathname } from 'next/navigation'
 
 export interface ChatList {
   messages: UIState
+  id: string
 }
 
-export function ChatMessage({ messages }: ChatList) {
+export function ChatMessage({ messages, id }: ChatList) {
+  const pathname = usePathname()
+  const { isSignedIn } = useUser()
+
+  useEffect(() => {
+    if (isSignedIn) {
+      if (!pathname.includes(id) && messages.length === 1) {
+        window.history.replaceState({}, '', `/chat/${id}`)
+      }
+    }
+  }, [pathname, isSignedIn, messages])
+
   if (!messages.length) {
     return null
   }

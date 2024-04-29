@@ -19,7 +19,6 @@ import {
   LinkSimple,
   LinkedinLogo,
 } from '@phosphor-icons/react'
-import { useUser } from '@clerk/nextjs'
 
 const components: { title: string; href: string; icon: any }[] = [
   {

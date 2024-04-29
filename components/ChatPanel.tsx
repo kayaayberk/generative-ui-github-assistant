@@ -1,13 +1,12 @@
 'use client'
 
 import { nanoid } from 'nanoid'
-import { UserMessage } from './assistant/Message'
-import { useAIState, useActions, useUIState } from 'ai/rsc'
-import { AI } from '@/lib/chat/actions'
-import { ArrowRight, GithubLogo } from '@phosphor-icons/react'
-import Link from 'next/link'
 import { useUser } from '@clerk/nextjs'
+import { AI } from '@/lib/chat/actions'
+import { UserMessage } from './assistant/Message'
 import { useSidebar } from '@/lib/hooks/use-sidebar'
+import { useAIState, useActions, useUIState } from 'ai/rsc'
+import { ArrowRight, GithubLogo } from '@phosphor-icons/react'
 
 function ChatPanel() {
   const exampleMessages = [
