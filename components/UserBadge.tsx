@@ -6,7 +6,6 @@ import {
   SignedOut,
   SignInButton,
   SignOutButton,
-  useClerk,
 } from '@clerk/nextjs'
 import {
   DropdownMenu,
@@ -21,25 +20,21 @@ import React from 'react'
 import Image from 'next/image'
 import { Button } from './ui/button'
 import { Skeleton } from './ui/skeleton'
-import { redirect, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import LoadingSpinner from './LoadingSpinner'
-import { DropdownMenuItem } from '@radix-ui/react-dropdown-menu'
 import { Gear, SignOut, User } from '@phosphor-icons/react'
+import { DropdownMenuItem } from '@radix-ui/react-dropdown-menu'
 
 function UserBadge() {
   const [position, setPosition] = React.useState('bottom')
-  const { isLoaded, isSignedIn, user } = useUser()
-
-  const { signOut } = useClerk()
+  const { isLoaded, user } = useUser()
   const router = useRouter()
 
   return (
     <>
       <SignedOut>
-        {/* Signed out users get sign in button */}
         <SignInButton afterSignInUrl={'/chat'} />
       </SignedOut>
-
       <DropdownMenu>
         <SignedIn>
           <DropdownMenuTrigger asChild>

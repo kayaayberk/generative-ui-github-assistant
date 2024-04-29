@@ -19,6 +19,7 @@ import { AI } from '@/lib/chat/actions'
 import { RepoProps } from '@/lib/types'
 import { COLOURS } from '@/lib/constants'
 import { useActions, useUIState } from 'ai/rsc'
+import AssistantDisplay from '../AssistantDisplay'
 import { Sparkle, Star } from '@phosphor-icons/react'
 
 function Repositories({ props: repos }: { props: RepoProps[] }) {
@@ -71,7 +72,7 @@ function Repositories({ props: repos }: { props: RepoProps[] }) {
   ]
 
   return (
-    <>
+    <AssistantDisplay>
       {Array.isArray(repos) &&
         repos.map((r, index) => {
           return (
@@ -118,7 +119,9 @@ function Repositories({ props: repos }: { props: RepoProps[] }) {
                     <div className='flex items-center gap-1'>
                       <div className='flex items-center gap-1'>
                         <div
-                          style={{ backgroundColor: findColour(r.language) }}
+                          style={{
+                            backgroundColor: findColour(r.language),
+                          }}
                           className={`rounded-full size-2.5`}
                         ></div>
                         <span className='flex items-center gap-1 text-sm font-light text-neutral-500'>
@@ -200,7 +203,7 @@ function Repositories({ props: repos }: { props: RepoProps[] }) {
             </div>
           )
         })}
-    </>
+    </AssistantDisplay>
   )
 }
 

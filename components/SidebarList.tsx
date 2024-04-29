@@ -1,5 +1,5 @@
-import { getChats } from '@/app/actions'
 import { cache } from 'react'
+import { getChats } from '@/app/actions'
 import SidebarItems from './SidebarItems'
 
 interface SidebarListProps {

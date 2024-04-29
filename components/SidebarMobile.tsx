@@ -1,11 +1,10 @@
 'use client'
 
-import { SidebarSimple } from '@phosphor-icons/react'
 import Sidebar from './Sidebar'
 import { Button } from './ui/button'
-import { Sheet, SheetContent, SheetTrigger } from './ui/sheet'
 import { useTheme } from 'next-themes'
-import { useSidebar } from '@/lib/hooks/use-sidebar'
+import { SidebarSimple } from '@phosphor-icons/react'
+import { Sheet, SheetContent, SheetTrigger } from './ui/sheet'
 
 interface SidebarMobileProps {
   children: React.ReactNode
@@ -13,7 +12,7 @@ interface SidebarMobileProps {
 
 function SidebarMobile({ children }: SidebarMobileProps) {
   const { theme } = useTheme()
-  const { isSidebarOpen, isLoading, toggleSidebar } = useSidebar()
+
   return (
     <Sheet>
       <SheetTrigger className={`ml-1 mt-1 top-0 left-0 absolute z-30`}>
