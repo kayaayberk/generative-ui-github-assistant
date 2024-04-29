@@ -18,7 +18,7 @@ function RateLimited() {
         >
           Sign-in
         </Link>{' '}
-        to to continue or come back later.
+        to continue or come back later.
       </p>
     </div>
   )

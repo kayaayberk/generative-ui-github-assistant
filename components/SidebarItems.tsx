@@ -1,10 +1,9 @@
 'use client'
 
-import { chat } from '@/db/schema'
 import { Chat } from '@/lib/types'
 import SidebarItem from './SidebarItem'
-import SideBarActions from './SideBarActions'
 import { removeChat } from '@/app/actions'
+import SideBarActions from './SideBarActions'
 
 interface SidebarItemsProps {
   chats?: Chat[]

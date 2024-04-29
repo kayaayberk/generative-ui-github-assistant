@@ -5,13 +5,11 @@ import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import { CodeBlock } from '../ui/code-block'
-import { Sparkle } from '@phosphor-icons/react'
 import { MemoizedReactMarkdown } from '../Markdown'
-import Image from 'next/image'
 
 export function Readme({ props: readme }: { props: string }) {
   return (
-    <div className={cn('group flex items-start w-[330px] sm:w-full')}>
+    <div className={cn('group flex items-start w-full')}>
       <div className='flex-1 space-y-2 overflow-hidden px-1 w-full'>
         <span className='font-semibold'>GitHub Assistant</span>
         <MemoizedReactMarkdown

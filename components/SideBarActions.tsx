@@ -1,9 +1,5 @@
 'use client'
 
-import * as React from 'react'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Chat, ServerActionResult } from '@/lib/types'
 import {
   AlertDialog,
   AlertDialogTitle,
@@ -12,7 +8,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogContent,
-  AlertDialogTrigger,
   AlertDialogDescription,
 } from '@/components/ui/alert-dialog'
 import {
@@ -20,14 +15,17 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import * as React from 'react'
 import { useToast } from './ui/use-toast'
+import { useRouter } from 'next/navigation'
 import LoadingSpinner from './LoadingSpinner'
-import { Share, Trash } from '@phosphor-icons/react'
+import { Trash } from '@phosphor-icons/react'
+import { Button } from '@/components/ui/button'
+import { Chat, ServerActionResult } from '@/lib/types'
 
 interface SidebarActionsProps {
   chat: Chat
   removeChat: (args: { id: string; path: string }) => ServerActionResult<void>
-  // shareChat: (id: string) => ServerActionResult<Chat>
 }
 
 function SideBarActions({ chat, removeChat }: SidebarActionsProps) {
