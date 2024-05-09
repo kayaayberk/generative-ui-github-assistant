@@ -6,9 +6,10 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from '@/components/ui/accordion'
+import React from 'react'
 import { Button } from '../ui/button'
 import { Directory as Dir } from '@/lib/types'
-import React, { useEffect, useState } from 'react'
+import AssistantDisplay from '../AssistantDisplay'
 import { useDecoder } from '@/lib/hooks/use-decoder'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { useCopyToClipboard } from '@/lib/hooks/use-copy-to-clipboard'
@@ -18,56 +19,58 @@ import { useGetDirectoryContent } from '@/lib/hooks/use-get-directory-content'
 
 export default function Directory({ props: directory }: { props: Dir[] }) {
   return (
-    <Accordion type='single' collapsible className=''>
-      <div className='border rounded-md p-2'>
-        {Array.isArray(directory) &&
-          directory
-            .sort((a, b) => {
-              if (a.type === 'dir' && b.type === 'file') {
-                return -1
-              } else if (a.type === 'file' && b.type === 'dir') {
-                return 1
-              } else {
-                return 0
-              }
-            })
-            .map((dir, index) => {
-              return dir.type === 'file' ? (
-                <AccordionItem
-                  value={`item-${index}`}
-                  className=' gap-1 w-full text-sm font-semibold last:border-none'
-                  key={index}
-                >
-                  <AccordionTrigger className='p-2 justify-start gap-2 text-sm font-semibold'>
-                    <span className='flex items-center gap-1'>
-                      <File size={18} color='#c2c2c2' weight='fill' />
-                      <span>{dir.name}</span>
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <DropdownFileContent url={dir.url} />
-                  </AccordionContent>
-                </AccordionItem>
-              ) : (
-                <AccordionItem
-                  value={`item-${index}`}
-                  className='gap-1 w-full text-sm font-semibold last:border-none'
-                  key={index}
-                >
-                  <AccordionTrigger className='p-2 justify-start gap-2 text-sm font-semibold'>
-                    <span className='flex items-center gap-1'>
-                      <FolderSimple size={18} color='#c2c2c2' weight='fill' />
-                      <span>{dir.name}</span>
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <DropdownContent url={dir._links.self} />
-                  </AccordionContent>
-                </AccordionItem>
-              )
-            })}
-      </div>
-    </Accordion>
+    <AssistantDisplay>
+      <Accordion type='single' collapsible className=''>
+        <div className='border rounded-md p-2'>
+          {Array.isArray(directory) &&
+            directory
+              .sort((a, b) => {
+                if (a.type === 'dir' && b.type === 'file') {
+                  return -1
+                } else if (a.type === 'file' && b.type === 'dir') {
+                  return 1
+                } else {
+                  return 0
+                }
+              })
+              .map((dir, index) => {
+                return dir.type === 'file' ? (
+                  <AccordionItem
+                    value={`item-${index}`}
+                    className=' gap-1 w-full text-sm font-semibold last:border-none'
+                    key={index}
+                  >
+                    <AccordionTrigger className='p-2 justify-start gap-2 text-sm font-semibold'>
+                      <span className='flex items-center gap-1'>
+                        <File size={18} color='#c2c2c2' weight='fill' />
+                        <span>{dir.name}</span>
+                      </span>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <DropdownFileContent url={dir.url} />
+                    </AccordionContent>
+                  </AccordionItem>
+                ) : (
+                  <AccordionItem
+                    value={`item-${index}`}
+                    className='gap-1 w-full text-sm font-semibold last:border-none'
+                    key={index}
+                  >
+                    <AccordionTrigger className='p-2 justify-start gap-2 text-sm font-semibold'>
+                      <span className='flex items-center gap-1'>
+                        <FolderSimple size={18} color='#c2c2c2' weight='fill' />
+                        <span>{dir.name}</span>
+                      </span>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <DropdownContent url={dir._links.self} />
+                    </AccordionContent>
+                  </AccordionItem>
+                )
+              })}
+        </div>
+      </Accordion>
+    </AssistantDisplay>
   )
 }
 

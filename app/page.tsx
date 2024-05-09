@@ -10,7 +10,6 @@ async function HomePage() {
     <AI initialAIState={{ chatId: id, messages: [] }}>
       <Chat
         id={id}
-        // session={session}
         missingKeys={missingKeys}
       />
     </AI>

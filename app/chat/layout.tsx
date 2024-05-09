@@ -10,10 +10,10 @@ interface ChatLayoutProps {
 
 const title = 'GitHub Assistant'
 const description =
-  'An experimental chatbot app that provides easier GitHub search through generative UI elements.'
+  "An experimental AI Chatbot utilising generative UI, serving data from GitHub's API through interactive UI components."
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://githubassistant.vercel.app/'),
+  metadataBase: new URL('https://githubassistant.vercel.app/chat'),
   title,
   description,
   openGraph: {

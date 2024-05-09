@@ -1,17 +1,13 @@
 'use client'
 
 import { Button } from './ui/button'
-import { useSidebar } from '@/lib/hooks/use-sidebar'
-import { CaretLeft, CaretRight, SidebarSimple } from '@phosphor-icons/react'
 import { useTheme } from 'next-themes'
-
-type SidebarChildrenProps = {
-  children: React.ReactNode
-}
+import { CaretLeft } from '@phosphor-icons/react'
+import { useSidebar } from '@/lib/hooks/use-sidebar'
 
 function SidebarToggle() {
   const { theme } = useTheme()
-  const { isSidebarOpen, isLoading, toggleSidebar } = useSidebar()
+  const { isSidebarOpen, toggleSidebar } = useSidebar()
   return (
     <Button
       size='icon'
