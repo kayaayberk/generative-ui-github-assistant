@@ -17,6 +17,7 @@ import Directory from '@/components/assistant/Directory'
 import Repositories from '@/components/assistant/Repositories'
 import { createStreamableUI, getMutableAIState } from 'ai/rsc'
 import { ProfileSkeleton } from '@/components/assistant/ProfileSkeleton'
+import RepositorySkeleton from '@/components/assistant/RepositorySkeleton'
 
 export async function repoAction(username: string) {
   'use server'
@@ -25,7 +26,7 @@ export async function repoAction(username: string) {
 
   const loadingRepos = createStreamableUI(
     <BotCard>
-      <ProfileSkeleton />
+      <RepositorySkeleton />
     </BotCard>,
   )
 

@@ -21,12 +21,19 @@ import { systemPrompt } from './system-prompt'
 import { Profile } from '@/components/assistant/Profile'
 import Repositories from '@/components/assistant/Repositories'
 import { ProfileList } from '@/components/assistant/ProfileList'
-import { ProfileSkeleton } from '@/components/assistant/ProfileSkeleton'
+import {
+  ProfileListSkeleton,
+  ProfileSkeleton,
+} from '@/components/assistant/ProfileSkeleton'
 import { createStreamableValue, getMutableAIState, render } from 'ai/rsc'
 import Directory from '@/components/assistant/Directory'
 import { Readme } from '@/components/assistant/Readme'
 import RateLimited from '@/components/RateLimited'
 import { sleep } from '../utils'
+import RepositorySkeleton from '@/components/assistant/RepositorySkeleton'
+import ReadmeSkeleton, {
+  DirectorySkeleton,
+} from '@/components/assistant/ReadmeSkeleton'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || '',
@@ -141,7 +148,7 @@ export async function submitUserMessage(content: string, attribute: string) {
         render: async function* ({ query }) {
           yield (
             <BotCard>
-              <ProfileSkeleton />
+              <ProfileListSkeleton />
             </BotCard>
           )
           const rateLimitRemaining = await checkRateLimit()
@@ -178,7 +185,7 @@ export async function submitUserMessage(content: string, attribute: string) {
         render: async function* ({ query }) {
           yield (
             <BotCard>
-              <ProfileSkeleton />
+              <RepositorySkeleton />
             </BotCard>
           )
           const rateLimitRemaining = await checkRateLimit()
@@ -218,7 +225,7 @@ export async function submitUserMessage(content: string, attribute: string) {
         render: async function* ({ repo, owner }) {
           yield (
             <BotCard>
-              <ProfileSkeleton />
+              <ReadmeSkeleton />
             </BotCard>
           )
           const rateLimitRemaining = await checkRateLimit()
@@ -258,7 +265,7 @@ export async function submitUserMessage(content: string, attribute: string) {
         render: async function* ({ repo, owner }) {
           yield (
             <BotCard>
-              <ProfileSkeleton />
+              <DirectorySkeleton />
             </BotCard>
           )
           const rateLimitRemaining = await checkRateLimit()
