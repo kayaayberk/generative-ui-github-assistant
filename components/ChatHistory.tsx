@@ -12,6 +12,7 @@ import ClearAllChats from './ClearAllChats'
 export async function ChatHistory() {
   const loggedInUser = await currentUser()
   if (!loggedInUser) {
+    console.log('No user logged in from ChatHistory component.')
     return null
   }
 
@@ -20,6 +21,7 @@ export async function ChatHistory() {
       .select({ id: user.id })
       .from(user)
       .where(eq(user.id, loggedInUser.id))
+    // console.log('user.id: ', user.id, 'loggedInUser.id:', loggedInUser.id)
 
     if (!existingUser.length) {
       const newUser: InsertUser = {
@@ -33,10 +35,18 @@ export async function ChatHistory() {
         .insert(user)
         .values(newUser)
         .onConflictDoUpdate({
-          target: user.email,
-          set: { email: newUser.email },
+          target: user.id,
+          set: {
+            email: newUser.email,
+            id: newUser.id,
+            name: newUser.name,
+            surname: newUser.surname,
+          },
         })
     }
+  } else {
+    console.log('No user logged in from ChatHistory component.')
+    throw new Error('No user logged in from ChatHistory component.')
   }
   return (
     <div className='gap-4 p-3 overflow-scroll border-r flex flex-col h-full justify-between'>
